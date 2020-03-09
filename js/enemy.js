@@ -10,17 +10,4 @@ let Enemy = function (name) {
         image.src = "./assets/images/InvaderA1.png";
         return image;
     };
-
-    this.delete = function (context) {
-        context.clearRect(this.xPosition,this.yPosition,this.width,this.height);
-    };
-
-    this.draw = function (context) {
-        let image = this.getImage();
-        let xPosition = this.xPosition;
-        let yPosition = this.yPosition;
-        image.onload = function () {
-            context.drawImage(image,xPosition,yPosition);
-        }
-    };
 };
