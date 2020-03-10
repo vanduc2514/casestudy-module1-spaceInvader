@@ -22,4 +22,13 @@ let Player = function (name) {
                 break;
         }
     };
+
+    this.shoot = function () {
+        this.bullet = new Bullet();
+        let yPosition = this.yPosition - DEFAULT_BULLET_START;
+        let xPosition = this.xPosition + this.width / 2;
+        this.bullet.xPosition = xPosition;
+        this.bullet.yPosition = yPosition;
+        return this.bullet;
+    };
 };
