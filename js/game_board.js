@@ -58,7 +58,8 @@ let GameBoard = function (name, canvasID) {
         }
         if (action !== "") {
             this.player.shoot();
-            this.player.bullet.fly(result);
+            this.checkHit();
+            // this.player.bullet.fly(this.hitEnemy());
         }
     };
 
