@@ -22,8 +22,4 @@ let Player = function (name) {
                 break;
         }
     };
-
-    this.shoot = function (object) {
-        console.log("shoot");
-    };
 };

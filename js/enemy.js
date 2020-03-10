@@ -4,6 +4,7 @@ let Enemy = function (name) {
     this.yPosition = DEFAULT_ENEMY_Y;
     this.width = DEFAULT_ENEMY_WIDTH;
     this.height = DEFAULT_ENEMY_HEIGHT;
+    this.state = true;
 
     this.getImage = function () {
         let image = new Image();

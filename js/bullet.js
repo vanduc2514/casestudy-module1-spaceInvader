@@ -1,11 +1,8 @@
-let Bullet = function (name) {
-    this.name = name;
-    this.xPosition;
-    this.yPosition;
-
-    this.delete = function (context) {
-        context.clearRect(this.xPosition,this.yPosition,this.width,this.height);
-    };
+let Bullet = function () {
+    this.xPosition = 50;
+    this.yPosition = 400;
+    this.width = DEFAULT_BULLET_WIDTH;
+    this.height = DEFAULT_BULLET_HEIGHT;
 
     this.getImage = function () {
         let image = new Image();

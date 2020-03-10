@@ -10,14 +10,9 @@ let GameBoard = function (name, canvasID) {
     this.canvas = document.getElementById(canvasID);
     this.context = this.canvas.getContext('2d');
     this.score = 0;
+    this.player = {};
 
-    this.getImage = function () {
-        let image = new Image();
-        image.src = "./assets/images/Background.jpg";
-        return image;
-    };
-
-    this.removeFrame = function (object) {
+    this.remove = function (object) {
         let xPosition = object.xPosition;
         let yPosition = object.yPosition;
         let clearWidth = object.width;
@@ -25,33 +20,32 @@ let GameBoard = function (name, canvasID) {
         this.context.clearRect(xPosition, yPosition, clearWidth, clearHeight);
     };
 
-    this.render = function (object) {
-        let image = object.getImage();
-        let xPosition = object.xPosition;
-        let yPosition = object.yPosition;
-        this.context.drawImage(image, xPosition, yPosition);
+    this.checkCollision = function (object1, object2) {
+        let distSubX = (object1.xPosition + object1.width / 2) - (object2.xPosition + object2.width / 2);
+        let distSubY = (object1.yPosition + object1.height / 2) - (object2.yPosition + object2.height / 2);
+        let distW = (object1.width + object2.width) / 2;
+        let distH = (object1.height + object2.height) / 2;
+        return Math.abs(distSubX) <= distW && Math.abs(distSubY) <= distH;
     };
 
     this.start = function () {
-        this.context.clearRect(0, 0, this.width, this.height);
-        this.player = new Player("player");
-        for (let indexOuter = 0; indexOuter < DEFAULT_ENEMY_ROWS; indexOuter++) {
-            let row = [];
-            this.enemyZone.push(row);
-            for (let indexInner = 1; indexInner <= this.enemyCols; indexInner++) {
-                this.enemy = new Enemy("enemy " + indexOuter + "-" + indexInner);
-                row.push(this.enemy);
-                this.enemy.xPosition = DEFAULT_ENEMY_X + indexInner * (DEFAULT_ENEMY_WIDTH + DEFAULT_ENEMY_SPACE);
-                this.enemy.yPosition = DEFAULT_ENEMY_Y + indexOuter * (DEFAULT_ENEMY_HEIGHT + DEFAULT_ENEMY_SPACE);
-                this.render(this.enemy);
+        this.player = new Player("Player");
+        for (let row = 0; row < DEFAULT_ENEMY_ROWS; row++) {
+            let enemyRow = [];
+            this.enemyZone.push(enemyRow);
+            for (let col = 1; col <= this.enemyCols; col++) {
+                this.enemy = new Enemy("enemy " + row + "-" + (col - 1));
+                enemyRow.push(this.enemy);
+                this.enemy.xPosition = DEFAULT_ENEMY_X + col * (DEFAULT_ENEMY_WIDTH + DEFAULT_ENEMY_SPACE);
+                this.enemy.yPosition = DEFAULT_ENEMY_Y + row * (DEFAULT_ENEMY_HEIGHT + DEFAULT_ENEMY_SPACE);
             }
         }
-        this.render(this.player);
     };
 
-    this.movePlayer = function (event) {
-        let direction = "stop";
-        switch (event.key) {
+    this.controlPlayer = function (event) {
+        let direction = "";
+        let action = "";
+        switch (event.code) {
             case "ArrowLeft":
                 if (this.player.xPosition >= this.moveThresholdLeft) {
                     direction = DIRECTION_LEFT;
@@ -62,17 +56,71 @@ let GameBoard = function (name, canvasID) {
                     direction = DIRECTION_RIGHT;
                 }
                 break;
+            case "Space":
+                action = PLAYER_SHOOT;
+                break;
         }
-        if (direction !== "stop") {
-            this.removeFrame(this.player);
+        if (direction !== "") {
+            // this.remove(this.player);
             this.player.move(direction);
-            this.render(this.player);
         }
+        // if (action !== "") {
+        //     let height = this.player.yPosition - 30;
+        //     let firstContact = this.firstEnemy.yPosition + this.firstEnemy.height;
+        //     let xPosition = this.player.xPosition + this.player.width / 2;
+        //     this.bullet = new Bullet();
+        //     this.bullet.xPosition = xPosition;
+        //     let board = this;
+        //     let shoot = setInterval(function () {
+        //         board.remove(board.bullet);
+        //         board.bullet.yPosition = height;
+        //         board.draw(board.bullet);
+        //         height -= DEFAULT_BULLET_TRAVEL;
+        //         if (height <= firstContact) {
+        //             for (let row = 3; row >= 0; row--) {
+        //                 for (let col = 0; col < 8; col++) {
+        //                     let isHit = board.checkCollision(board.bullet, board.enemyZone[row][col]);
+        //                     if (isHit) {
+        //                         board.remove(board.bullet);
+        //                         board.remove(board.enemyZone[row][col]);
+        //                         clearInterval(shoot);
+        //                     }
+        //                     if (board.bullet.xPosition <= 0) {
+        //                         clearInterval(shoot);
+        //                     }
+        //                 }
+        //             }
+        //
+        //         }
+        //     }, DEFAULT_BULLET_SPEED);
+        // }
     };
 };
 
 let gameBoard = new GameBoard("game", "game-canvas");
 gameBoard.start();
+
+function draw(object) {
+    let image = object.getImage();
+    let xPosition = object.xPosition;
+    let yPosition = object.yPosition;
+    gameBoard.context.beginPath();
+    gameBoard.context.drawImage(image, xPosition, yPosition);
+    gameBoard.context.closePath();
+}
+
+function renderFrame() {
+    draw(gameBoard.player);
+    for (let row = 3; row >= 0; row--) {
+        for (let col = 0; col < 8; col ++) {
+            draw(gameBoard.enemyZone[row][col])
+        }
+    }
+    requestAnimationFrame(renderFrame());
+}
+
+renderFrame();
+
 window.addEventListener("keydown", function (event) {
-    gameBoard.movePlayer(event)
+    gameBoard.controlPlayer(event)
 });
