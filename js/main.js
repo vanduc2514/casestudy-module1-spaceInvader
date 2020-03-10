@@ -30,6 +30,7 @@ let GameBoard = function (name, canvasID) {
 
     this.start = function () {
         this.player = new Player("Player");
+        this.bullet = new Bullet();
         for (let row = 0; row < DEFAULT_ENEMY_ROWS; row++) {
             let enemyRow = [];
             this.enemyZone.push(enemyRow);
@@ -40,6 +41,7 @@ let GameBoard = function (name, canvasID) {
                 this.enemy.yPosition = DEFAULT_ENEMY_Y + row * (DEFAULT_ENEMY_HEIGHT + DEFAULT_ENEMY_SPACE);
             }
         }
+        this.firstEnemy = this.enemyZone[3][0];
     };
 
     this.controlPlayer = function (event) {
@@ -64,36 +66,35 @@ let GameBoard = function (name, canvasID) {
             // this.remove(this.player);
             this.player.move(direction);
         }
-        // if (action !== "") {
-        //     let height = this.player.yPosition - 30;
-        //     let firstContact = this.firstEnemy.yPosition + this.firstEnemy.height;
-        //     let xPosition = this.player.xPosition + this.player.width / 2;
-        //     this.bullet = new Bullet();
-        //     this.bullet.xPosition = xPosition;
-        //     let board = this;
-        //     let shoot = setInterval(function () {
-        //         board.remove(board.bullet);
-        //         board.bullet.yPosition = height;
-        //         board.draw(board.bullet);
-        //         height -= DEFAULT_BULLET_TRAVEL;
-        //         if (height <= firstContact) {
-        //             for (let row = 3; row >= 0; row--) {
-        //                 for (let col = 0; col < 8; col++) {
-        //                     let isHit = board.checkCollision(board.bullet, board.enemyZone[row][col]);
-        //                     if (isHit) {
-        //                         board.remove(board.bullet);
-        //                         board.remove(board.enemyZone[row][col]);
-        //                         clearInterval(shoot);
-        //                     }
-        //                     if (board.bullet.xPosition <= 0) {
-        //                         clearInterval(shoot);
-        //                     }
-        //                 }
-        //             }
-        //
-        //         }
-        //     }, DEFAULT_BULLET_SPEED);
-        // }
+        if (action !== "") {
+            let board = this;
+            let nearHit = this.firstEnemy.yPosition + this.firstEnemy.height;
+            this.bullet = new Bullet();
+            let yPosition = this.player.yPosition - 30;
+            let xPosition = this.player.xPosition + this.player.width / 2;
+            this.bullet.xPosition = xPosition;
+            this.bullet.yPosition = yPosition;
+            let shoot = setInterval(function () {
+                board.bullet.yPosition -= DEFAULT_BULLET_TRAVEL;
+                for (let row = 3; row >= 0; row--) {
+                    for (let col = 0; col < 8; col++) {
+                        if (board.bullet.yPosition <= nearHit) {
+                            if (board.enemyZone[row][col].state) {
+                                let isHit = board.checkCollision(board.bullet, board.enemyZone[row][col]);
+                                if (isHit) {
+                                    board.enemyZone[row][col].state = false;
+                                    board.bullet.state = false;
+                                    clearInterval(shoot);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (board.bullet.yPosition <= -30) {
+                    clearInterval(shoot);
+                }
+            }, DEFAULT_BULLET_VELOCITY)
+        }
     };
 };
 
@@ -110,16 +111,22 @@ function draw(object) {
 }
 
 function renderFrame() {
+    gameBoard.context.clearRect(0, 0, gameBoard.width, gameBoard.height);
     draw(gameBoard.player);
+    if (gameBoard.bullet.state) {
+        draw(gameBoard.bullet);
+    }
     for (let row = 3; row >= 0; row--) {
-        for (let col = 0; col < 8; col ++) {
-            draw(gameBoard.enemyZone[row][col])
+        for (let col = 0; col < 8; col++) {
+            if (gameBoard.enemyZone[row][col].state) {
+                draw(gameBoard.enemyZone[row][col]);
+            }
         }
     }
-    requestAnimationFrame(renderFrame());
+    requestAnimationFrame(renderFrame);
 }
 
-renderFrame();
+requestAnimationFrame(renderFrame);
 
 window.addEventListener("keydown", function (event) {
     gameBoard.controlPlayer(event)

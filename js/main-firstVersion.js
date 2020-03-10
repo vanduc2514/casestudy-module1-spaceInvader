@@ -115,7 +115,7 @@ let GameBoard = function (name, canvasID) {
                     }
 
                 }
-            }, DEFAULT_BULLET_SPEED);
+            }, DEFAULT_BULLET_VELOCITY);
         }
     };
 };

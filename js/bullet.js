@@ -1,8 +1,9 @@
 let Bullet = function () {
-    this.xPosition = 50;
-    this.yPosition = 400;
+    this.xPosition;
+    this.yPosition;
     this.width = DEFAULT_BULLET_WIDTH;
     this.height = DEFAULT_BULLET_HEIGHT;
+    this.state = true;
 
     this.getImage = function () {
         let image = new Image();
