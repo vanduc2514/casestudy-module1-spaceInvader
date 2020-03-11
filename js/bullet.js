@@ -13,5 +13,5 @@ let Bullet = function () {
 
     this.travel = function () {
         this.yPosition -= DEFAULT_BULLET_TRAVEL;
-    };
+    }
 };

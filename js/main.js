@@ -2,14 +2,15 @@ let gameBoard = new GameBoard("game", "game-canvas");
 gameBoard.start();
 gameBoard.swarmDrop();
 gameBoard.enemyDrop();
+requestAnimationFrame(renderFrame);
 
 function draw(object) {
     let image = object.getImage();
     let xPosition = object.xPosition;
     let yPosition = object.yPosition;
-    // gameBoard.context.beginPath();
+    gameBoard.context.beginPath();
     gameBoard.context.drawImage(image, xPosition, yPosition);
-    // gameBoard.context.closePath();
+    gameBoard.context.closePath();
 }
 
 function renderFrame() {
@@ -27,8 +28,6 @@ function renderFrame() {
     }
     requestAnimationFrame(renderFrame);
 }
-
-requestAnimationFrame(renderFrame);
 
 window.addEventListener("keydown", function (event) {
     gameBoard.controlPlayer(event)
