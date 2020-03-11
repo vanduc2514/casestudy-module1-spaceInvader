@@ -1,10 +1,11 @@
-let Player = function (name) {
+let Ship = function (name) {
     this.name = name;
-    this.xPosition = DEFAULT_PLAYER_X;
-    this.yPosition = DEFAULT_PLAYER_Y;
-    this.width = DEFAULT_PLAYER_WIDTH;
-    this.height = DEFAULT_PLAYER_HEIGHT;
-    this.speed = DEFAULT_PLAYER_SPEED;
+    this.xPosition = DEFAULT_SHIP_X;
+    this.yPosition = DEFAULT_SHIP_Y;
+    this.width = DEFAULT_SHIP_WIDTH;
+    this.height = DEFAULT_SHIP_HEIGHT;
+    this.speed = DEFAULT_SHIP_SPEED;
+    this.state = true;
 
     this.getImage = function () {
         let image = new Image();
@@ -26,7 +27,7 @@ let Player = function (name) {
     this.shoot = function () {
         this.bullet = new Bullet();
         this.bullet.state = true;
-        let yPosition = this.yPosition - DEFAULT_BULLET_START;
+        let yPosition = this.yPosition - DEFAULT_BULLET_SPACE;
         let xPosition = this.xPosition + this.width / 2;
         this.bullet.xPosition = xPosition;
         this.bullet.yPosition = yPosition;

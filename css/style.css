@@ -2,3 +2,34 @@
     border: 1px solid black;
     background-image: url("https://media2.giphy.com/media/ZrlFjwhclknWE/source.gif");
 }
+
+@font-face {
+    font-family: "FVFFernando08";
+    src: url('../assets/fonts/FVFFernando08.eot'); /* IE9 Compat Modes */
+    src: url("../assets/fonts/FVFFernando08.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("../assets/fonts/FVFFernando08.otf") format("opentype"), /* Open Type Font */
+    url("../assets/fonts/FVFFernando08.svg") format("svg"), /* Legacy iOS */
+    url("../assets/fonts/FVFFernando08.ttf") format("truetype"), /* Safari, Android, iOS */
+    url("../assets/fonts/FVFFernando08.woff") format("woff"), /* Modern Browsers */
+    url("../assets/fonts/FVFFernando08.woff2") format("woff2"); /* Modern Browsers */
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'FVFFernando08', serif;
+    font-size: 10px;
+}
+
+button {
+    font-family: 'FVFFernando08', serif;
+}
+
+.container {
+    text-align: center;
+}
+
+table {
+    display: inline-block;
+    border: 1px solid black;
+}

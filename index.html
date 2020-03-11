@@ -3,16 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Game bắn ruồi</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<h1>Game bắn ruồi</h1>
-<canvas id="game-canvas" width="600px" height="600px"></canvas>
-<script src="js/config.js"></script>
-<script src="js/player.js"></script>
-<script src="js/bullet.js"></script>
-<script src="js/enemy.js"></script>
-<script src="js/game_board.js"></script>
-<script src="js/main.js"></script>
+<h1>Bắn ruồi</h1>
+<button onclick="startGame()">Bắt đầu</button>
+<br><br>
+<div class="container">
+        <canvas id="game-canvas" width="600px" height="600px"></canvas>
+        <table id="score"></table>
+</div>
+<script src="js/Config.js"></script>
+<script src="js/Ship.js"></script>
+<script src="js/Bullet.js"></script>
+<script src="js/Invader.js"></script>
+<script src="js/GameBoard.js"></script>
+<script src="js/Render.js"></script>
+<script src="js/Main.js"></script>
+<script src="js/ScoreBoard.js"></script>
 </body>
 </html>
