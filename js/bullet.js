@@ -1,9 +1,9 @@
 let Bullet = function () {
-    this.xPosition;
-    this.yPosition;
+    this.xPosition = DEFAULT_BULLET_X;
+    this.yPosition = DEFAULT_BULLET_Y;
     this.width = DEFAULT_BULLET_WIDTH;
     this.height = DEFAULT_BULLET_HEIGHT;
-    this.state = true;
+    this.state = false;
 
     this.getImage = function () {
         let image = new Image();
@@ -13,21 +13,5 @@ let Bullet = function () {
 
     this.travel = function () {
         this.yPosition -= DEFAULT_BULLET_TRAVEL;
-    };
-
-    this.fly = function (isCollideCheck) {
-        let bullet = this;
-        let shoot = setInterval(function () {
-            bullet.yPosition -= DEFAULT_BULLET_TRAVEL;
-            console.log("Đạn bay: " + bullet.yPosition);
-            if (isCollideCheck) {
-                bullet.state = false;
-                clearInterval(shoot);
-            }
-            if (bullet.yPosition <= 0) {
-                console.log("Đạn bay: " + bullet.yPosition);
-                clearInterval(shoot);
-            }
-        }, DEFAULT_BULLET_VELOCITY)
     };
 };

@@ -1,13 +1,15 @@
 let gameBoard = new GameBoard("game", "game-canvas");
 gameBoard.start();
+gameBoard.swarmDrop();
+gameBoard.enemyDrop();
 
 function draw(object) {
     let image = object.getImage();
     let xPosition = object.xPosition;
     let yPosition = object.yPosition;
-    gameBoard.context.beginPath();
+    // gameBoard.context.beginPath();
     gameBoard.context.drawImage(image, xPosition, yPosition);
-    gameBoard.context.closePath();
+    // gameBoard.context.closePath();
 }
 
 function renderFrame() {
@@ -16,10 +18,10 @@ function renderFrame() {
     if (gameBoard.player.bullet.state) {
         draw(gameBoard.player.bullet);
     }
-    for (let row = gameBoard.enemyZone.length - 1; row >= 0; row--) {
-        for (let col = 0; col < gameBoard.enemyCols; col++) {
-            if (gameBoard.enemyZone[row][col].state) {
-                draw(gameBoard.enemyZone[row][col]);
+    for (let row = gameBoard.swarm.length - 1; row >= 0; row--) {
+        for (let col = 0; col < gameBoard.swarmCols; col++) {
+            if (gameBoard.swarm[row][col].state) {
+                draw(gameBoard.swarm[row][col]);
             }
         }
     }
@@ -31,3 +33,4 @@ requestAnimationFrame(renderFrame);
 window.addEventListener("keydown", function (event) {
     gameBoard.controlPlayer(event)
 });
+

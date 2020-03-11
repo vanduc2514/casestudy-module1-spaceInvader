@@ -25,6 +25,7 @@ let Player = function (name) {
 
     this.shoot = function () {
         this.bullet = new Bullet();
+        this.bullet.state = true;
         let yPosition = this.yPosition - DEFAULT_BULLET_START;
         let xPosition = this.xPosition + this.width / 2;
         this.bullet.xPosition = xPosition;
