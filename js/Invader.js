@@ -26,6 +26,6 @@ let Invader = function (name) {
                 invader.state = false;
                 clearInterval(drop);
             }
-        }, this.velocity)
+        }, invader.velocity)
     };
 };
