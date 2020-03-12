@@ -17,14 +17,11 @@ let Bullet = function () {
         let bullet = this;
         let travel = setInterval(function () {
             if (!bullet.state) {
-                console.log("after hit: " + !bullet.state);
                 clearInterval(travel);
             }
             bullet.yPosition -= bullet.travel;
-            console.log("before hit: " + !bullet.state);
             if (bullet.yPosition <= boundary) {
                 clearInterval(travel);
-                console.log("stop");
             }
         }, this.velocity)
     }

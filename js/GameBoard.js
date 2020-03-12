@@ -21,6 +21,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
     this.moveThresholdLeft = DEFAULT_SHIP_SPEED - DEFAULT_SHIP_WIDTH / 2;
     this.moveThresholdRight = this.width - DEFAULT_SHIP_SPEED - DEFAULT_SHIP_WIDTH / 2;
     this.isOver = false;
+    this.isVictory = false;
 
     this.createSwarm = function () {
         this.swarm = [];
@@ -133,6 +134,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                     count++;
                 }
                 if (count >= this.swarmRows * this.swarmCols) {
+                    this.isVictory = true;
                     this.isOver = true;
                     alert("Thắng rồi. Hurrayy!!");
                     let choice = confirm("Chơi tiếp hông ?");
@@ -163,32 +165,27 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }
     };
 
-
     this.swarmDrop = function () {
-        let board = this;
-        let drop = setInterval(function () {
-            if (board.isOver) {
-                clearInterval(drop);
+        for (let row = this.swarm.length - 1; row >= 0; row--) {
+            for (let col = 0; col < this.swarmCols; col++) {
+                this.swarm[row][col].travel = this.swarmTravel;
+                this.swarm[row][col].velocity = this.swarmVelocity;
+                this.swarm[row][col].drop(this.height);
             }
-            for (let row = board.swarm.length - 1; row >= 0; row--) {
-                for (let col = 0; col < board.swarmCols; col++) {
-                    board.swarm[row][col].yPosition += board.swarmTravel;
-                }
-            }
-        }, board.swarmVelocity);
+        }
     };
 
-    this.invaderDrop = function () {
+    this.invaderTimeDrop = function () {
         let board = this;
         let randRows = this.swarmRows;
         let randCols = this.swarmCols;
         let drop = setInterval(function () {
-            console.log("board status" + board.isOver);
             if (board.isOver) {
                 clearInterval(drop);
             }
             let row = Math.abs(Math.floor(Math.random() * randRows - 1));
             let col = Math.abs(Math.floor(Math.random() * randCols - 1));
+            board.swarm[row][col].isTimedrop = true;
             board.swarm[row][col].travel = board.enemyTravel;
             board.swarm[row][col].velocity = board.enemyVelocity;
             board.swarm[row][col].drop(board.height);

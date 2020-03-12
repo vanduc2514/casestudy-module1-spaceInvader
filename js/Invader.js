@@ -5,7 +5,7 @@ let Invader = function (name) {
     this.width = DEFAULT_INVADER_WIDTH;
     this.height = DEFAULT_INVADER_HEIGHT;
     this.state = true;
-    this.swarm = [];
+    this.isTimedrop = false;
     this.travel = 0;
     this.velocity = 0;
 
@@ -19,17 +19,13 @@ let Invader = function (name) {
         let invader = this;
         let drop = setInterval(function () {
             if (!invader.state) {
-                console.log("state: " + !invader.state);
                 clearInterval(drop);
             }
             invader.yPosition += invader.travel;
-            console.log("state: " + !invader.state);
             if (invader.yPosition > boundary) {
                 invader.state = false;
                 clearInterval(drop);
-                console.log("stop");
             }
         }, this.velocity)
-    }
-
+    };
 };
