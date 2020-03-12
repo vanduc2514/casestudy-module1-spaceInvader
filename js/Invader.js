@@ -6,6 +6,8 @@ let Invader = function (name) {
     this.height = DEFAULT_INVADER_HEIGHT;
     this.state = true;
     this.swarm = [];
+    this.travel = 0;
+    this.velocity = 0;
 
     this.getImage = function () {
         let image = new Image();
@@ -13,20 +15,21 @@ let Invader = function (name) {
         return image;
     };
 
-    this.travel = function (boundary) {
-        let enemy = this;
+    this.drop = function (boundary) {
+        let invader = this;
         let drop = setInterval(function () {
-            if (!enemy.state) {
-                console.log("state: " + !enemy.state);
+            if (!invader.state) {
+                console.log("state: " + !invader.state);
                 clearInterval(drop);
             }
-            enemy.yPosition += DEFAULT_INVADER_TRAVEL;
-            console.log("state: " + !enemy.state);
-            if (enemy.yPosition > boundary) {
+            invader.yPosition += invader.travel;
+            console.log("state: " + !invader.state);
+            if (invader.yPosition > boundary) {
+                invader.state = false;
                 clearInterval(drop);
                 console.log("stop");
             }
-        }, DEFAULT_INVADER_VELOCITY)
+        }, this.velocity)
     }
 
 };

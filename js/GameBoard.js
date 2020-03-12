@@ -1,19 +1,26 @@
-
 let GameBoard = function (playerName, canvasID, gameBoardID) {
     this.player = playerName;
     this.ID = gameBoardID;
     this.width = document.getElementById(canvasID).width;
     this.height = document.getElementById(canvasID).height;
     this.context = document.getElementById(canvasID).getContext('2d');
+    this.score = DEFAULT_SCORE;
+    this.scoreIncrease = DEFAULT_SCORE_INCREMENT;
     this.swarmCols = Math.floor((this.width - 2 * DEFAULT_SWARM_X + DEFAULT_SWARM_SPACE) /
         (DEFAULT_SHIP_WIDTH + DEFAULT_SWARM_SPACE));
     this.swarmRows = DEFAULT_SWARM_ROWS;
     this.swarmxPostion = DEFAULT_SWARM_X;
     this.swarmyPosition = DEFAULT_SWARM_Y;
+    this.swarmTravel = DEFAULT_BOARD_SWARM_TRAVEL;
+    this.swarmVelocity = DEFAULT_BOARD_SWARM_VELOCITY;
+    this.enemyTravel = DEFAULT_BOARD_INVADER_TRAVEL;
+    this.enemyVelocity = DEFAULT_BOARD_INVADER_VELOCITY;
+    this.enemyTimeDrop = DEFAULT_TIME_INVADER_DROP;
+    this.bulletTravel = DEFAULT_BOARD_BULLET_TRAVEL;
+    this.bulletVelocity = DEFAULT_BOARD_BULLET_VELOCITY;
     this.moveThresholdLeft = DEFAULT_SHIP_SPEED - DEFAULT_SHIP_WIDTH / 2;
     this.moveThresholdRight = this.width - DEFAULT_SHIP_SPEED - DEFAULT_SHIP_WIDTH / 2;
     this.isOver = false;
-    this.score = DEFAULT_SCORE;
 
     this.createSwarm = function () {
         this.swarm = [];
@@ -30,7 +37,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         return this.swarm;
     };
 
-    this.start = function () {
+    this.init = function () {
         this.ship = new Ship("Player");
         this.ship.bullet = new Bullet();
         this.createSwarm();
@@ -38,8 +45,8 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
 
     this.saveScore = function () {
         let score = new Score();
-        score.setData(this.player,this.score);
-        window.localStorage.setItem(this.ID,JSON.stringify(score));
+        score.setData(this.player, this.score);
+        window.localStorage.setItem(this.ID, JSON.stringify(score));
     };
 
 
@@ -47,17 +54,17 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         let direction = "";
         let action = "";
         switch (event.code) {
-            case "ArrowLeft":
+            case KEYBOARD_LEFT:
                 if (this.ship.xPosition >= this.moveThresholdLeft) {
                     direction = DIRECTION_LEFT;
                 }
                 break;
-            case "ArrowRight":
+            case KEYBOARD_RIGHT:
                 if (this.ship.xPosition <= this.moveThresholdRight) {
                     direction = DIRECTION_RIGHT;
                 }
                 break;
-            case "Space":
+            case KEYBOARD_SPACE:
                 action = ACTION_SHOOT;
                 break;
         }
@@ -66,7 +73,9 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }
         if (action === ACTION_SHOOT) {
             this.ship.shoot();
-            this.ship.bullet.travel(0);
+            this.ship.bullet.travel = this.bulletTravel;
+            this.ship.bullet.velocity = this.bulletVelocity;
+            this.ship.bullet.fly(0);
         }
     };
 
@@ -75,10 +84,12 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
             for (let col = 0; col < this.swarmCols; col++) {
                 if (this.swarm[row][col].state) {
                     let isHit = isCrash(this.ship.bullet, this.swarm[row][col]);
+                    console.log(isHit);
                     if (isHit) {
                         this.ship.bullet.state = false;
                         this.swarm[row][col].state = false;
-                        this.score += DEFAULT_SCORE_INCREMENT;
+                        this.score += this.scoreIncrease;
+                        score += this.score;
                         console.log(this.score);
                     }
                 }
@@ -91,16 +102,63 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
             for (let col = 0; col < this.swarmCols; col++) {
                 if (this.swarm[row][col].state) {
                     let isHit = isCrash(this.ship, this.swarm[row][col]);
+                    console.log(isHit);
                     if (isHit) {
                         this.ship.state = false;
                         this.swarm[row][col].state = false;
                         this.saveScore();
                         this.isOver = true;
                         this.score = 0;
-                        alert("You Lost");
                         return;
                     }
                 }
+            }
+        }
+    };
+
+    this.watchDog = function () {
+        if (this.ship.bullet.state) {
+            this.checkBulletHit();
+        }
+        if (this.ship.state) {
+            this.checkShipHit();
+        }
+    };
+
+    this.checkWin = function () {
+        let count = 0;
+        for (let row = this.swarm.length - 1; row >= 0; row--) {
+            for (let col = 0; col < this.swarmCols; col++) {
+                if (!this.swarm[row][col].state) {
+                    count++;
+                }
+                if (count >= this.swarmRows * this.swarmCols) {
+                    this.isOver = true;
+                    alert("Thắng rồi. Hurrayy!!");
+                    let choice = confirm("Chơi tiếp hông ?");
+                    if (choice) {
+                        nextLevel();
+                        score += this.score;
+                    } else {
+                        stopGame();
+                        return true;
+                    }
+                }
+            }
+        }
+    };
+
+    this.checkLose = function () {
+        if (this.isOver) {
+            alert("Đồ thua cuộc!!!!!");
+            let choice = confirm("Chơi lại hông ??");
+            if (choice) {
+                this.isOver = false;
+                replayGame();
+            } else {
+                stopGame();
+                score += this.score;
+                return true;
             }
         }
     };
@@ -114,10 +172,10 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
             }
             for (let row = board.swarm.length - 1; row >= 0; row--) {
                 for (let col = 0; col < board.swarmCols; col++) {
-                    board.swarm[row][col].yPosition += DEFAULT_SWARM_TRAVEL;
+                    board.swarm[row][col].yPosition += board.swarmTravel;
                 }
             }
-        }, DEFAULT_SWARM_VELOCITY);
+        }, board.swarmVelocity);
     };
 
     this.invaderDrop = function () {
@@ -131,8 +189,10 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
             }
             let row = Math.abs(Math.floor(Math.random() * randRows - 1));
             let col = Math.abs(Math.floor(Math.random() * randCols - 1));
-            board.swarm[row][col].travel(board.height);
-        }, DEFAULT_TIME_INVADER_DROP)
+            board.swarm[row][col].travel = board.enemyTravel;
+            board.swarm[row][col].velocity = board.enemyVelocity;
+            board.swarm[row][col].drop(board.height);
+        }, board.enemyTimeDrop)
     };
 };
 

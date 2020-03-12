@@ -10,7 +10,7 @@
 <p id="score">Điểm của bạn là: </p>
 <br>
 <div class="container">
-    <button onclick="startGame()">Bắt đầu</button>
+    <button onclick="startGame()" onkeydown="event.preventDefault()">Bắt đầu</button>
     <canvas id="game-canvas" width="600px" height="600px"></canvas>
     <table id="score-board"></table>
 </div>
