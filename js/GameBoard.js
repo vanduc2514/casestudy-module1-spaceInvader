@@ -151,7 +151,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
     };
 
     this.checkLose = function () {
-        if (this.isOver) {
+        if (this.isOver && !this.isVictory) {
             alert("Đồ thua cuộc!!!!!");
             let choice = confirm("Chơi lại hông ??");
             if (choice) {
