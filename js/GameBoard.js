@@ -165,7 +165,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }
     };
 
-    this.swarmDrop = function () {
+    this.invaderDrop = function () {
         for (let row = this.swarm.length - 1; row >= 0; row--) {
             for (let col = 0; col < this.swarmCols; col++) {
                 this.swarm[row][col].travel = this.swarmTravel;
@@ -173,21 +173,17 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                 this.swarm[row][col].drop(this.height);
             }
         }
-    };
-
-    this.invaderTimeDrop = function () {
         let board = this;
         let randRows = this.swarmRows;
         let randCols = this.swarmCols;
-        let drop = setInterval(function () {
+        let timeDrop = setInterval(function () {
             if (board.isOver) {
-                clearInterval(drop);
+                clearInterval(timeDrop);
             }
             let row = Math.abs(Math.floor(Math.random() * randRows - 1));
             let col = Math.abs(Math.floor(Math.random() * randCols - 1));
-            board.swarm[row][col].travel += board.enemyTravel;
-            board.swarm[row][col].velocity += board.enemyVelocity;
-            board.swarm[row][col].drop(board.height);
+            board.swarm[row][col].travel = board.enemyTravel;
+            board.swarm[row][col].velocity = board.enemyVelocity;
         }, board.enemyTimeDrop)
     };
 };

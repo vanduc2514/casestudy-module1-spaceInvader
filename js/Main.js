@@ -21,7 +21,7 @@ function replayGame() {
 }
 
 function stopGame() {
-    currentLevel.clearRect(0,0,currentLevel.width,currentLevel.height);
+    currentLevel.context.clearRect(0,0,currentLevel.width,currentLevel.height);
 }
 
 function nextLevel() {
@@ -35,8 +35,7 @@ function nextLevel() {
 
 function createBoard(board) {
     board.init();
-    board.swarmDrop();
-    board.invaderTimeDrop();
+    board.invaderDrop();
     requestAnimationFrame(function () {
         renderFrame(board);
     });
