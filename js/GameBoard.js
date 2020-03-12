@@ -90,7 +90,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                         this.ship.bullet.state = false;
                         this.swarm[row][col].state = false;
                         this.score += this.scoreIncrease;
-                        score += this.score;
+                        score += this.scoreIncrease;
                         console.log(this.score);
                     }
                 }
@@ -109,7 +109,6 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                         this.swarm[row][col].state = false;
                         this.saveScore();
                         this.isOver = true;
-                        this.score = 0;
                         return;
                     }
                 }
@@ -140,7 +139,6 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                     let choice = confirm("Chơi tiếp hông ?");
                     if (choice) {
                         nextLevel();
-                        score += this.score;
                     } else {
                         stopGame();
                         return true;
@@ -159,7 +157,6 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                 replayGame();
             } else {
                 stopGame();
-                score += this.score;
                 return true;
             }
         }

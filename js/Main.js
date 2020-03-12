@@ -7,6 +7,7 @@ let playerName;
 drawTable();
 
 function startGame() {
+    score = 0;
     playerName = prompt("Nhập tên người chơi: ");
     currentLevel = new GameBoard(playerName, "game-canvas", ID);
     alert("Bạn là người chơi thứ: " + ID);
@@ -16,7 +17,7 @@ function startGame() {
 }
 
 function replayGame() {
-    console.log(currentLevel);
+    score = 0;
     createBoard(currentLevel);
 }
 
