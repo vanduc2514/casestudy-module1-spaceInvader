@@ -3,6 +3,10 @@
     background-image: url("https://media2.giphy.com/media/ZrlFjwhclknWE/source.gif");
 }
 
+.container {
+    text-align: center;
+}
+
 @font-face {
     font-family: "FVFFernando08";
     src: url('../assets/fonts/FVFFernando08.eot'); /* IE9 Compat Modes */
@@ -19,17 +23,47 @@
 body {
     font-family: 'FVFFernando08', serif;
     font-size: 10px;
+    /*background-color: #595959;*/
+    background-image: url("https://i.pinimg.com/736x/bb/9e/64/bb9e6413e813b1df8894611f53022c40.jpg");
+    color: white;
+}
+
+p {
+    text-align: center;
+    font-size: 15px;
+}
+
+h1 {
+    text-align: center;
 }
 
 button {
     font-family: 'FVFFernando08', serif;
-}
-
-.container {
-    text-align: center;
+    position: absolute;
+    top: 19%;
+    left: 10%;
 }
 
 table {
     display: inline-block;
-    border: 1px solid black;
+    border: 1px solid white;
+    margin-left: 40px;
+    border-collapse: collapse;
+    text-align: left;
+    margin-bottom: 360px;
+    font-size: 14px;
+}
+
+thead {
+    font-weight: bold;
+}
+
+td {
+    border: 1px solid white;
+    width: 150px;
+    padding: 5px;
+}
+
+thead {
+    text-align: center;
 }

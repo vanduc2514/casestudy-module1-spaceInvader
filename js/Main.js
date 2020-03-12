@@ -1,6 +1,7 @@
 let ID = 1;
 let gameBoard = new GameBoard("default", "game-canvas", 0);
-let table = document.getElementById("score");
+let table = document.getElementById("score-board");
+let score = document.getElementById("score");
 drawTable();
 
 function startGame() {

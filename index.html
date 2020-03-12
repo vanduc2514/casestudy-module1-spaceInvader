@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Game bắn ruồi</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<h1>Bắn ruồi</h1>
-<button onclick="startGame()">Bắt đầu</button>
-<br><br>
+<h1>Game Bắn ruồi</h1>
+<p id="score">Điểm của bạn là: </p>
+<br>
 <div class="container">
-        <canvas id="game-canvas" width="600px" height="600px"></canvas>
-        <table id="score"></table>
+    <button onclick="startGame()">Bắt đầu</button>
+    <canvas id="game-canvas" width="600px" height="600px"></canvas>
+    <table id="score-board"></table>
 </div>
 <script src="js/Config.js"></script>
 <script src="js/Ship.js"></script>

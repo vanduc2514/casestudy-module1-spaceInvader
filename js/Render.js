@@ -9,7 +9,7 @@ function draw(object) {
 
 function renderFrame() {
     gameBoard.context.clearRect(0, 0, gameBoard.width, gameBoard.height);
-    if (gameBoard.ship.state) {
+    if (!gameBoard.isOver) {
         draw(gameBoard.ship);
     }
     draw(gameBoard.ship);
@@ -29,6 +29,8 @@ function renderFrame() {
             }
         }
     }
+    score.innerHTML = "Điểm của bạn là: " + gameBoard.score;
+    drawTable();
     requestAnimationFrame(renderFrame);
 }
 
@@ -39,7 +41,10 @@ function drawTable() {
         let data = window.localStorage.getItem(index.toString());
         data = JSON.parse(data);
         console.log(data);
-        html += "<tr>" + "<td>" + data.name + "</td>" + "<td>" + data.score+ "</td>" + "</tr>";
+        html += "<tr>";
+        html += "<td>" + data.name + "</td>";
+        html += "<td style='text-align: center'>" + data.score + "</td>";
+        html += "</tr>";
     }
     table.innerHTML = html;
 }

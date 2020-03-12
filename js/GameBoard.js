@@ -1,5 +1,5 @@
-const DEFAULT_SCORE_INCREMENT = 10;
-let GameBoard = function (playerName, canvasID,gameBoardID) {
+
+let GameBoard = function (playerName, canvasID, gameBoardID) {
     this.player = playerName;
     this.ID = gameBoardID;
     this.width = document.getElementById(canvasID).width;
@@ -13,7 +13,7 @@ let GameBoard = function (playerName, canvasID,gameBoardID) {
     this.moveThresholdLeft = DEFAULT_SHIP_SPEED - DEFAULT_SHIP_WIDTH / 2;
     this.moveThresholdRight = this.width - DEFAULT_SHIP_SPEED - DEFAULT_SHIP_WIDTH / 2;
     this.isOver = false;
-    this.score = 0;
+    this.score = DEFAULT_SCORE;
 
     this.createSwarm = function () {
         this.swarm = [];
