@@ -175,28 +175,6 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }
     };
 
-    this.swarmDropNew = function () {
-        for (let row = this.swarm.length - 1; row >= 0; row--) {
-            for (let col = 0; col < this.swarmCols; col++) {
-                this.swarm[row][col].travel = this.swarmTravel;
-                this.swarm[row][col].velocity = this.swarmVelocity;
-                this.swarm[row][col].drop(this.height);
-            }
-        }
-        let board = this;
-        let randRows = this.swarmRows;
-        let randCols = this.swarmCols;
-        let timeDrop = setInterval(function () {
-            if (board.isOver) {
-                clearInterval(timeDrop);
-            }
-            let row = Math.abs(Math.floor(Math.random() * randRows - 1));
-            let col = Math.abs(Math.floor(Math.random() * randCols - 1));
-            board.swarm[row][col].travel = board.enemyTravel;
-            board.swarm[row][col].velocity = board.enemyVelocity;
-        }, board.enemyTimeDrop)
-    };
-
     this.invaderTimeDrop = function () {
         let board = this;
         let randRows = this.swarmRows;
@@ -207,9 +185,8 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
             }
             let row = Math.abs(Math.floor(Math.random() * randRows - 1));
             let col = Math.abs(Math.floor(Math.random() * randCols - 1));
-            board.swarm[row][col].isTimedrop = true;
-            board.swarm[row][col].travel = board.enemyTravel;
-            board.swarm[row][col].velocity = board.enemyVelocity;
+            board.swarm[row][col].travel += board.enemyTravel;
+            board.swarm[row][col].velocity += board.enemyVelocity;
             board.swarm[row][col].drop(board.height);
         }, board.enemyTimeDrop)
     };

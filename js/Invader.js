@@ -5,7 +5,6 @@ let Invader = function (name) {
     this.width = DEFAULT_INVADER_WIDTH;
     this.height = DEFAULT_INVADER_HEIGHT;
     this.state = true;
-    this.isTimedrop = false;
     this.travel = 0;
     this.velocity = 0;
 

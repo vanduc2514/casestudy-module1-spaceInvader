@@ -35,9 +35,8 @@ function nextLevel() {
 
 function createBoard(board) {
     board.init();
-    // board.swarmDrop();
-    board.swarmDropNew();
-    // board.invaderTimeDrop();
+    board.swarmDrop();
+    board.invaderTimeDrop();
     requestAnimationFrame(function () {
         renderFrame(board);
     });
