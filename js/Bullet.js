@@ -15,14 +15,14 @@ let Bullet = function () {
 
     this.fly = function (boundary) {
         let bullet = this;
-        let travel = setInterval(function () {
-            if (!bullet.state) {
-                clearInterval(travel);
-            }
-            bullet.yPosition -= bullet.travel;
-            if (bullet.yPosition <= boundary) {
-                clearInterval(travel);
-            }
-        }, this.velocity)
-    }
+        this.yPosition -= this.travel;
+        if (this.yPosition <= boundary) {
+            this.state = false;
+        }
+        if (this.state) {
+            setTimeout(function () {
+                bullet.fly(boundary)
+            }, bullet.velocity)
+        }
+    };
 };

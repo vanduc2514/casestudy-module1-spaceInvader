@@ -44,13 +44,6 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         this.createSwarm();
     };
 
-    this.saveScore = function () {
-        let score = new Score();
-        score.setData(this.player, this.score);
-        window.localStorage.setItem(this.ID, JSON.stringify(score));
-    };
-
-
     this.controlShip = function (event) {
         let direction = "";
         let action = "";
@@ -80,18 +73,38 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }
     };
 
+    this.invaderDrop = function () {
+        for (let row = this.swarm.length - 1; row >= 0; row--) {
+            for (let col = 0; col < this.swarmCols; col++) {
+                this.swarm[row][col].travel = this.swarmTravel;
+                this.swarm[row][col].velocity = this.swarmVelocity;
+                this.swarm[row][col].drop(this.height);
+            }
+        }
+        let board = this;
+        let randRows = this.swarmRows;
+        let randCols = this.swarmCols;
+        let timeDrop = setInterval(function () {
+            if (board.isOver) {
+                clearInterval(timeDrop);
+            }
+            let row = Math.abs(Math.floor(Math.random() * randRows - 1));
+            let col = Math.abs(Math.floor(Math.random() * randCols - 1));
+            board.swarm[row][col].travel = board.enemyTravel;
+            board.swarm[row][col].velocity = board.enemyVelocity;
+        }, board.enemyTimeDrop)
+    };
+
     this.checkBulletHit = function () {
         for (let row = this.swarm.length - 1; row >= 0; row--) {
             for (let col = 0; col < this.swarmCols; col++) {
                 if (this.swarm[row][col].state) {
                     let isHit = isCrash(this.ship.bullet, this.swarm[row][col]);
-                    console.log(isHit);
                     if (isHit) {
                         this.ship.bullet.state = false;
                         this.swarm[row][col].state = false;
                         this.score += this.scoreIncrease;
                         score += this.scoreIncrease;
-                        console.log(this.score);
                     }
                 }
             }
@@ -103,11 +116,9 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
             for (let col = 0; col < this.swarmCols; col++) {
                 if (this.swarm[row][col].state) {
                     let isHit = isCrash(this.ship, this.swarm[row][col]);
-                    console.log(isHit);
                     if (isHit) {
                         this.ship.state = false;
                         this.swarm[row][col].state = false;
-                        this.saveScore();
                         this.isOver = true;
                         return;
                     }
@@ -132,65 +143,36 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                 if (!this.swarm[row][col].state) {
                     count++;
                 }
-                if (count >= this.swarmRows * this.swarmCols) {
-                    this.isVictory = true;
-                    this.isOver = true;
-                    alert("Thắng rồi. Hurrayy!!");
-                    let choice = confirm("Chơi tiếp hông ?");
-                    if (choice) {
-                        nextLevel();
-                    } else {
-                        stopGame();
-                        return true;
-                    }
-                }
             }
         }
-    };
-
-    this.checkLose = function () {
-        if (this.isOver && !this.isVictory) {
-            alert("Đồ thua cuộc!!!!!");
-            let choice = confirm("Chơi lại hông ??");
+        if (count >= this.swarmRows * this.swarmCols) {
+            this.isVictory = true;
+            this.isOver = true;
+            alert("Thắng rồi. Hurrayy!!");
+            let choice = confirm("Các màn sau sẽ thử thách hơn. Chơi tiếp hông ?");
             if (choice) {
-                this.isOver = false;
-                replayGame();
+                nextLevel();
             } else {
+                saveScore(this.ID.toString(),this.player);
                 stopGame();
                 return true;
             }
         }
     };
 
-    this.invaderDrop = function () {
-        for (let row = this.swarm.length - 1; row >= 0; row--) {
-            for (let col = 0; col < this.swarmCols; col++) {
-                this.swarm[row][col].travel = this.swarmTravel;
-                this.swarm[row][col].velocity = this.swarmVelocity;
-                this.swarm[row][col].drop(this.height);
+
+    this.checkLose = function () {
+        if (this.isOver && !this.isVictory) {
+            alert("Tiếc quá không cứu được Trái Đất rùi :(");
+            let choice = confirm("Không sao đâu. Chơi lại hông ??");
+            if (choice) {
+                this.isOver = false;
+                replayGame();
+            } else {
+                saveScore(this.ID.toString(),this.player);
+                stopGame();
+                return true;
             }
         }
-        let board = this;
-        let randRows = this.swarmRows;
-        let randCols = this.swarmCols;
-        let timeDrop = setInterval(function () {
-            if (board.isOver) {
-                clearInterval(timeDrop);
-            }
-            let row = Math.abs(Math.floor(Math.random() * randRows - 1));
-            let col = Math.abs(Math.floor(Math.random() * randCols - 1));
-            board.swarm[row][col].travel = board.enemyTravel;
-            board.swarm[row][col].velocity = board.enemyVelocity;
-        }, board.enemyTimeDrop)
     };
 };
-
-//Global Function
-
-function isCrash(object1, object2) {
-    let distSubX = (object1.xPosition + object1.width / 2) - (object2.xPosition + object2.width / 2);
-    let distSubY = (object1.yPosition + object1.height / 2) - (object2.yPosition + object2.height / 2);
-    let distW = (object1.width + object2.width) / 2;
-    let distH = (object1.height + object2.height) / 2;
-    return Math.abs(distSubX) <= distW && Math.abs(distSubY) <= distH;
-}

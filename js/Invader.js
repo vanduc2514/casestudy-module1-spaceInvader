@@ -16,16 +16,14 @@ let Invader = function (name) {
 
     this.drop = function (boundary) {
         let invader = this;
-        if (!this.state) {
-            clearTimeout(drop);
-        }
         this.yPosition += this.travel;
-        if (this.yPosition > boundary) {
+        if (this.yPosition >= boundary) {
             this.state = false;
-            clearTimeout(drop);
         }
-        let drop = setTimeout(function () {
-            invader.drop(boundary)
-        }, invader.velocity)
-    };
+        if (this.state) {
+            setTimeout(function () {
+                invader.drop(boundary)
+            }, this.velocity)
+        }
+    }
 };

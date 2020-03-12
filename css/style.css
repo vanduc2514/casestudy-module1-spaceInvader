@@ -41,17 +41,18 @@ button {
     font-family: 'FVFFernando08', serif;
     position: absolute;
     top: 19%;
-    left: 10%;
+    left: 21%;
 }
 
 table {
-    display: inline-block;
+    position: absolute;
+    top: 19%;
+    left: 73%;
     border: 1px solid white;
-    margin-left: 40px;
     border-collapse: collapse;
     text-align: left;
-    margin-bottom: 360px;
     font-size: 14px;
+    background: rgba(0,0,0,0.2);
 }
 
 thead {
