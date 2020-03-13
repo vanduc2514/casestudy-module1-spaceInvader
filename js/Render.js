@@ -8,7 +8,7 @@ function draw(board, object) {
 }
 
 function renderFrame(board) {
-    if (!board.isOver) {
+    if (!board.isOver || board.isVictory) {
         board.context.clearRect(0, 0, board.width, board.height);
         draw(board, board.ship);
         if (board.ship.bullet.state) {

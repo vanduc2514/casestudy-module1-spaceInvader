@@ -4,74 +4,74 @@ let scoreDisplay = document.getElementById("score");
 let score;
 let playerName = "";
 let level = 1;
-let currentLevel;
 let beginner = new GameBoard(playerName, "game-canvas", ID);
 let intermediate = new GameBoard(playerName, "game-canvas", ID);
 let advance = new GameBoard(playerName, "game-canvas", ID);
 let expertise = new GameBoard(playerName, "game-canvas", ID);
-let god = new GameBoard(playerName, "game-canvas", ID);
-
 drawScoreBoard();
 
 function startGame() {
     score = 0;
     level = 1;
     playerName = prompt("Bạn gì ơi, nhập tên của mình vào đây nhé: ", "Để tên trống sẽ mặc định là Loser");
-    if (playerName === null) {
+    if (playerName === null || playerName === "") {
         playerName = "Loser";
     }
-    currentLevel = beginner;
     alert("Bắt đầu chơi nà");
-    createBoard(currentLevel);
+    createBoard(beginner);
     drawScoreBoard();
     ID++;
 }
 
 function replayGame() {
-    drawScoreBoard();
     level = 1;
     score = 0;
-    createBoard(currentLevel);
+    createBoard(beginner);
+    drawScoreBoard();
 }
 
 function stopGame() {
-    currentLevel.context.clearRect(0, 0, currentLevel.width, currentLevel.height);
+    beginner.context.clearRect(0, 0, beginner.width, beginner.height);
     drawScoreBoard();
 }
 
 function nextLevel() {
-    drawScoreBoard();
-    if (level <= 10) {
+    if (level <= 5) {
         createBeginner();
-        createBoard(currentLevel);
+        createBoard(beginner);
     }
-    if (level > 10 && level <= 20) {
+    if (level > 5 && level <= 10) {
         createIntermediate();
-        createBoard(currentLevel);
+        createBoard(intermediate);
     }
-    if (level > 20 && level <= 30) {
+    if (level > 15 && level <= 20) {
         createAdvance();
-        createBoard(currentLevel);
+        createBoard(advance);
     }
-    if (level > 30 && level <= 40) {
+    if (level > 25 && level <= 30) {
         createExpertise();
-        createBoard(currentLevel);
+        createBoard(expertise);
+    }
+    else {
+        saveScore();
+        stopGame();
+        alert("Bạn đã cố gắng lắm nhỉ, cám ơn bạn đã chơi trò chơi của tôi ^^")
     }
     level++;
+    document.getElementById("level").innerHTML = level;
     alert("Bạn đã tới level: " + level);
-
+    drawScoreBoard();
 }
 
 function createBoard(board) {
     board.init();
-    board.invaderDrop();
     requestAnimationFrame(function () {
         renderFrame(board);
     });
     window.addEventListener("keydown", function (event) {
         board.controlShip(event)
     });
-    document.getElementById("level").innerHTML = level;
+    board.invaderDrop();
 }
 
 function isCrash(object1, object2) {

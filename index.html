@@ -6,15 +6,20 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<h1>Bắn ruồi 8 bit</h1>
+<h2>Bắn ruồi 8 bit</h2>
 <p id="score">Ấn bắt đầu để chơi nha!</p>
-<br>
 <div class="container">
     <button onclick="startGame()" onkeydown="event.preventDefault()">Bắt đầu</button>
     <p class="level">Level</p>
     <p class="level" id="level">1</p>
     <canvas id="game-canvas" width="600px" height="600px"></canvas>
     <table id="score-board"></table>
+</div>
+<div class="container">
+    <pre id="manual">
+        Sử dụng phím mũi tên để di chuyển và phím cách để bắn.
+        Chúc bạn tiêu diệt được hết quái vật!
+    </pre>
 </div>
 <script src="js/Config.js"></script>
 <script src="js/Ship.js"></script>
@@ -25,6 +30,5 @@
 <script src="js/Render.js"></script>
 <script src="js/ScoreBoard.js"></script>
 <script src="js/Main.js"></script>
-
 </body>
 </html>

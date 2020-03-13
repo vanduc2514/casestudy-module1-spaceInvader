@@ -16,6 +16,7 @@ function saveScore(ID,playerName) {
 
 function drawScoreBoard() {
     let scoreBoard = getAndSortScore();
+    console.log(scoreBoard);
     let html = "<caption>Những anh hùng đã hy sinh</caption><thead><tr><td>Tên Anh hùng</td><td>Điểm số</td></tr></thead>";
     html += "<tbody>";
     for (let index = 0; index < scoreBoard.length; index++) {
