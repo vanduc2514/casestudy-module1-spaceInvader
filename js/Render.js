@@ -31,38 +31,3 @@ function renderFrame(board) {
     }
 }
 
-function drawScoreBoard() {
-    let scoreBoard = getAndSortScore();
-    let html = "<thead><tr><td>Tên Người chơi</td><td>Điểm số</td></tr></thead>";
-    html += "<tbody>";
-    for (let index = 0; index < scoreBoard.length; index++) {
-        html += "<tr>";
-        html += "<td>" + scoreBoard[index].name + "</td>";
-        html += "<td style='text-align: center'>" + scoreBoard[index].score + "</td>";
-        html += "</tr>";
-    }
-    html += "</tbody>";
-    table.innerHTML = html;
-}
-
-function getAndSortScore() {
-    let scoreArr = [];
-    for (let index = 1; index <= localStorage.length; index++) {
-        let data = window.localStorage.getItem(index.toString());
-        data = JSON.parse(data);
-        scoreArr.push(data);
-    }
-    console.log(scoreArr.length);
-    console.log(scoreArr);
-    for (let indexOuter = 0; indexOuter < scoreArr.length; indexOuter++) {
-        for (let indexInner = 0; indexInner < scoreArr.length - 1; indexInner++) {
-            if (scoreArr[indexInner].score < scoreArr[indexInner + 1].score) {
-                let temp = scoreArr[indexInner];
-                scoreArr[indexInner] = scoreArr[indexInner + 1];
-                scoreArr[indexInner + 1] = temp;
-            }
-        }
-    }
-    return scoreArr;
-}
-
