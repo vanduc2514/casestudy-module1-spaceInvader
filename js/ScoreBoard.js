@@ -22,11 +22,11 @@ function saveScore(ID,playerName) {
     }
 }
 
-let champOne = new Score("Đức", 1000);
-let champTwo = new Score("NamCT", 700);
-let champThree = new Score("Nyan Cat", 500);
-let champFour = new Score("420_Blaze_it", 300);
-let champFive = new Score("SadPepe :(", 120);
+let champOne = new Score(DEFAULT_CHAMP_ONE_NAME, DEFAULT_CHAMP_ONE_SCORE);
+let champTwo = new Score(DEFAULT_CHAMP_TWO_NAME, DEFAULT_CHAMP_TWO_SCORE);
+let champThree = new Score(DEFAULT_CHAMP_THREE_NAME, DEFAULT_CHAMP_THREE_SCORE);
+let champFour = new Score(DEFAULT_CHAMP_FOUR_NAME, DEFAULT_CHAMP_FOUR_SCORE);
+let champFive = new Score(DEFAULT_CHAMP_FIVE_NAME, DEFAULT_CHAMP_FIVE_SCORE);
 
 window.localStorage.setItem("1", JSON.stringify(champOne));
 window.localStorage.setItem("2", JSON.stringify(champTwo));
