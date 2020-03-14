@@ -3,7 +3,7 @@ let currentLevel = new GameBoard("default", "game-canvas", 0);
 let tableDisplay = document.getElementById("score-board");
 let scoreDisplay = document.getElementById("score");
 let score = 0;
-let playerName = "Player " + playerID;
+let playerName;
 let playerScore = new Score();
 let render;
 drawScoreBoard();
