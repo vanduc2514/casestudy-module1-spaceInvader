@@ -6,6 +6,7 @@ let Bullet = function () {
     this.state = false;
     this.travel = 0;
     this.velocity = 0;
+    this.isFly = false;
 
     this.getImage = function () {
         let image = new Image();

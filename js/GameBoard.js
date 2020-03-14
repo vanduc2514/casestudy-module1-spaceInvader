@@ -4,7 +4,6 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
     this.width = document.getElementById(canvasID).width;
     this.height = document.getElementById(canvasID).height;
     this.context = document.getElementById(canvasID).getContext('2d');
-    this.score = DEFAULT_SCORE;
     this.scoreIncrease = DEFAULT_SCORE_INCREMENT;
     this.swarmCols = Math.floor((this.width - 2 * DEFAULT_SWARM_X + DEFAULT_SWARM_SPACE) /
         (DEFAULT_SHIP_WIDTH + DEFAULT_SWARM_SPACE));
@@ -23,6 +22,9 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
     this.isLost = false;
     this.isVictory = false;
     this.isOver = false;
+    this.bulletArr = [];
+    this.bulletIndex = 0;
+    this.activeMachineGun = false;
 
     this.createSwarm = function () {
         this.swarm = [];
@@ -74,9 +76,18 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }
         if (action === ACTION_SHOOT) {
             this.ship.shoot();
-            this.ship.bullet.travel = this.bulletTravel;
-            this.ship.bullet.velocity = this.bulletVelocity;
-            this.ship.bullet.fly(0);
+            if (this.activeMachineGun) {
+                this.bulletArr.push(this.ship.shoot());
+                this.bulletArr[this.bulletIndex].travel = this.bulletTravel;
+                this.bulletArr[this.bulletIndex].velocity = this.bulletVelocity;
+                this.bulletArr[this.bulletIndex].fly(0);
+                this.bulletIndex++;
+            } else {
+                this.bulletArr[this.bulletIndex] = this.ship.shoot();
+                this.bulletArr[this.bulletIndex].travel = this.bulletTravel;
+                this.bulletArr[this.bulletIndex].velocity = this.bulletVelocity;
+                this.bulletArr[this.bulletIndex].fly(0);
+            }
         }
     };
 
@@ -103,16 +114,17 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
     };
 
     this.checkBulletHit = function () {
-        if (this.ship.bullet.state) {
-            for (let row = this.swarm.length - 1; row >= 0; row--) {
-                for (let col = 0; col < this.swarmCols; col++) {
-                    if (this.swarm[row][col].state) {
-                        let isHit = isCrash(this.ship.bullet, this.swarm[row][col]);
-                        if (isHit) {
-                            this.ship.bullet.state = false;
-                            this.swarm[row][col].state = false;
-                            this.score += this.scoreIncrease;
-                            score += this.scoreIncrease;
+        for (let index = 0; index < this.bulletArr.length; index++) {
+            if (this.bulletArr[index].state) {
+                for (let row = this.swarm.length - 1; row >= 0; row--) {
+                    for (let col = 0; col < this.swarmCols; col++) {
+                        if (this.swarm[row][col].state) {
+                            let isHit = checkCollision(this.bulletArr[index], this.swarm[row][col]);
+                            if (isHit) {
+                                this.bulletArr[index].state = false;
+                                this.swarm[row][col].state = false;
+                                score += this.scoreIncrease;
+                            }
                         }
                     }
                 }
@@ -120,12 +132,30 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }
     };
 
+
+    // this.checkBulletHit = function () {
+    //     if (this.ship.bullet.state) {
+    //         for (let row = this.swarm.length - 1; row >= 0; row--) {
+    //             for (let col = 0; col < this.swarmCols; col++) {
+    //                 if (this.swarm[row][col].state) {
+    //                     let isHit = checkCollision(this.ship.bullet, this.swarm[row][col]);
+    //                     if (isHit) {
+    //                         this.ship.bullet.state = false;
+    //                         this.swarm[row][col].state = false;
+    //                         score += this.scoreIncrease;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // };
+
     this.checkShipHit = function () {
         if (this.ship.state) {
             for (let row = this.swarm.length - 1; row >= 0; row--) {
                 for (let col = 0; col < this.swarmCols; col++) {
                     if (this.swarm[row][col].state) {
-                        let isHit = isCrash(this.ship, this.swarm[row][col]);
+                        let isHit = checkCollision(this.ship, this.swarm[row][col]);
                         if (isHit) {
                             this.ship.state = false;
                             this.swarm[row][col].state = false;
@@ -147,7 +177,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
             }
         }
         if (!this.isVictory) {
-            if ( count >= this.swarmRows * this.swarmCols) {
+            if (count >= this.swarmRows * this.swarmCols) {
                 this.isOver = true;
                 this.isVictory = true;
                 alert("Thắng rồi. Hurrayy!!");
@@ -178,7 +208,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
     };
 };
 
-function isCrash(object1, object2) {
+function checkCollision(object1, object2) {
     let distSubX = (object1.xPosition + object1.width / 2) - (object2.xPosition + object2.width / 2);
     let distSubY = (object1.yPosition + object1.height / 2) - (object2.yPosition + object2.height / 2);
     let distW = (object1.width + object2.width) / 2;

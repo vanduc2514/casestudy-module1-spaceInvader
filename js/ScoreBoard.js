@@ -22,6 +22,8 @@ function saveScore(ID,playerName) {
     }
 }
 
+window.localStorage.clear();
+
 let champOne = new Score(DEFAULT_CHAMP_ONE_NAME, DEFAULT_CHAMP_ONE_SCORE);
 let champTwo = new Score(DEFAULT_CHAMP_TWO_NAME, DEFAULT_CHAMP_TWO_SCORE);
 let champThree = new Score(DEFAULT_CHAMP_THREE_NAME, DEFAULT_CHAMP_THREE_SCORE);
