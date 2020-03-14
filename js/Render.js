@@ -8,7 +8,7 @@ function drawObject(board, object) {
 }
 
 function renderFrame(board) {
-    if (!board.isOver || board.isVictory) {
+    if (!board.isOver) {
         board.context.clearRect(0, 0, board.width, board.height);
         drawObject(board, board.ship);
         if (board.ship.bullet.state) {
@@ -64,3 +64,5 @@ function drawScoreBoard() {
     html += "</tbody>";
     tableDisplay.innerHTML = html;
 }
+
+

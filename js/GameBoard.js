@@ -62,6 +62,12 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
             case KEYBOARD_SPACE:
                 action = ACTION_SHOOT;
                 break;
+            case "KeyW":
+                this.isVictory = true;
+                break;
+            case "KeyQ":
+                this.isLost = true;
+                break;
         }
         if (direction !== "") {
             this.ship.move(direction);
@@ -141,7 +147,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
             }
         }
         if (!this.isVictory) {
-            if (count >= this.swarmRows * this.swarmCols) {
+            if ( count >= this.swarmRows * this.swarmCols) {
                 this.isOver = true;
                 this.isVictory = true;
                 alert("Thắng rồi. Hurrayy!!");
