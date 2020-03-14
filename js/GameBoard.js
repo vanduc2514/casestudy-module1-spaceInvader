@@ -22,9 +22,11 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
     this.isLost = false;
     this.isVictory = false;
     this.isOver = false;
-    this.bulletArr = [];
-    this.bulletIndex = 0;
+    this.playerBulletArr = [];
+    this.playerBulletIndex = 0;
     this.activeMachineGun = false;
+    this.enemyBulletArr = [];
+    this.enemyBulletIndex = 0;
 
     this.createSwarm = function () {
         this.swarm = [];
@@ -77,16 +79,16 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         if (action === ACTION_SHOOT) {
             this.ship.shoot();
             if (this.activeMachineGun) {
-                this.bulletArr.push(this.ship.shoot());
-                this.bulletArr[this.bulletIndex].travel = this.bulletTravel;
-                this.bulletArr[this.bulletIndex].velocity = this.bulletVelocity;
-                this.bulletArr[this.bulletIndex].fly(0);
-                this.bulletIndex++;
+                this.playerBulletArr.push(this.ship.shoot());
+                this.playerBulletArr[this.playerBulletIndex].travel = this.bulletTravel;
+                this.playerBulletArr[this.playerBulletIndex].velocity = this.bulletVelocity;
+                this.playerBulletArr[this.playerBulletIndex].fly(0);
+                this.playerBulletIndex++;
             } else {
-                this.bulletArr[this.bulletIndex] = this.ship.shoot();
-                this.bulletArr[this.bulletIndex].travel = this.bulletTravel;
-                this.bulletArr[this.bulletIndex].velocity = this.bulletVelocity;
-                this.bulletArr[this.bulletIndex].fly(0);
+                this.playerBulletArr[this.playerBulletIndex] = this.ship.shoot();
+                this.playerBulletArr[this.playerBulletIndex].travel = this.bulletTravel;
+                this.playerBulletArr[this.playerBulletIndex].velocity = this.bulletVelocity;
+                this.playerBulletArr[this.playerBulletIndex].fly(0);
             }
         }
     };
@@ -113,15 +115,34 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }, board.enemyTimeDrop)
     };
 
+    this.invaderFireBack = function () {
+        let board = this;
+        let randRows = this.swarmRows;
+        let randCols = this.swarmCols;
+        let timeShoot = setInterval(function () {
+            if (board.isLost) {
+                clearInterval(timeShoot)
+            }
+            let row = Math.abs(Math.floor(Math.random() * randRows - 1));
+            let col = Math.abs(Math.floor(Math.random() * randCols - 1));
+            board.swarm[row][col].shoot();
+            board.enemyBulletArr.push(board.swarm[row][col].shoot());
+            board.enemyBulletArr[board.enemyBulletIndex].velocity = board.bulletVelocity;
+            board.enemyBulletArr[board.enemyBulletIndex].travel = board.bulletTravel * -1;
+            board.enemyBulletArr[board.enemyBulletIndex].fly(board.height);
+            board.enemyBulletIndex++;
+        },board.enemyTimeDrop)
+    };
+
     this.checkBulletHit = function () {
-        for (let index = 0; index < this.bulletArr.length; index++) {
-            if (this.bulletArr[index].state) {
+        for (let index = 0; index < this.playerBulletArr.length; index++) {
+            if (this.playerBulletArr[index].state) {
                 for (let row = this.swarm.length - 1; row >= 0; row--) {
                     for (let col = 0; col < this.swarmCols; col++) {
                         if (this.swarm[row][col].state) {
-                            let isHit = checkCollision(this.bulletArr[index], this.swarm[row][col]);
+                            let isHit = checkCollision(this.playerBulletArr[index], this.swarm[row][col]);
                             if (isHit) {
-                                this.bulletArr[index].state = false;
+                                this.playerBulletArr[index].state = false;
                                 this.swarm[row][col].state = false;
                                 score += this.scoreIncrease;
                             }
@@ -131,24 +152,6 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
             }
         }
     };
-
-
-    // this.checkBulletHit = function () {
-    //     if (this.ship.bullet.state) {
-    //         for (let row = this.swarm.length - 1; row >= 0; row--) {
-    //             for (let col = 0; col < this.swarmCols; col++) {
-    //                 if (this.swarm[row][col].state) {
-    //                     let isHit = checkCollision(this.ship.bullet, this.swarm[row][col]);
-    //                     if (isHit) {
-    //                         this.ship.bullet.state = false;
-    //                         this.swarm[row][col].state = false;
-    //                         score += this.scoreIncrease;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // };
 
     this.checkShipHit = function () {
         if (this.ship.state) {

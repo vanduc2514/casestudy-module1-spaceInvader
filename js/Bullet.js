@@ -6,7 +6,7 @@ let Bullet = function () {
     this.state = false;
     this.travel = 0;
     this.velocity = 0;
-    this.isFly = false;
+    this.isShipShoot = true;
 
     this.getImage = function () {
         let image = new Image();
@@ -17,8 +17,14 @@ let Bullet = function () {
     this.fly = function (boundary) {
         let bullet = this;
         this.yPosition -= this.travel;
-        if (this.yPosition <= boundary) {
-            this.state = false;
+        if (this.isShipShoot) {
+            if (this.yPosition <= boundary) {
+                this.state = false;
+            }
+        } else {
+            if (this.yPosition >= boundary) {
+                this.state = false;
+            }
         }
         if (this.state) {
             setTimeout(function () {

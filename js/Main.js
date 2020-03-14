@@ -50,6 +50,7 @@ function nextGame() {
 function createBoard(board) {
     board.init();
     board.invaderDrop();
+    board.invaderFireBack();
     render = window.requestAnimationFrame(function () {
         renderFrame(board)
     });

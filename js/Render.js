@@ -11,28 +11,34 @@ function renderFrame(board) {
     if (!board.isOver) {
         board.context.clearRect(0, 0, board.width, board.height);
         drawObject(board, board.ship);
-    }
-    for (let index = 0; index < board.bulletArr.length; index++) {
-        if (board.bulletArr[index].state) {
-            drawObject(board, board.bulletArr[index]);
-        }
-    }
-    for (let row = board.swarm.length - 1; row >= 0; row--) {
-        for (let col = 0; col < board.swarmCols; col++) {
-            if (board.swarm[row][col].state) {
-                drawObject(board, board.swarm[row][col]);
+
+        for (let index = 0; index < board.playerBulletArr.length; index++) {
+            if (board.playerBulletArr[index].state) {
+                drawObject(board, board.playerBulletArr[index]);
             }
         }
+        for (let index = 0; index < board.enemyBulletArr.length; index++) {
+            if (board.enemyBulletArr[index].state) {
+                drawObject(board, board.enemyBulletArr[index]);
+            }
+        }
+        for (let row = board.swarm.length - 1; row >= 0; row--) {
+            for (let col = 0; col < board.swarmCols; col++) {
+                if (board.swarm[row][col].state) {
+                    drawObject(board, board.swarm[row][col]);
+                }
+            }
+        }
+        board.checkBulletHit();
+        board.checkShipHit();
+        board.checkWin();
+        board.checkLose();
+        scoreDisplay.innerHTML = "Điểm số: " + score;
+        levelDisplay.innerHTML = levelID;
+        window.requestAnimationFrame(function () {
+            renderFrame(board);
+        });
     }
-    board.checkBulletHit();
-    board.checkShipHit();
-    board.checkWin();
-    board.checkLose();
-    scoreDisplay.innerHTML = "Điểm số: " + score;
-    levelDisplay.innerHTML = levelID;
-    window.requestAnimationFrame(function () {
-        renderFrame(board);
-    });
 }
 
 function getAndSortScore() {
