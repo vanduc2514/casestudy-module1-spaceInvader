@@ -1,9 +1,9 @@
 let ID = window.localStorage.length + 1;
 let currentLevel = new GameBoard("default", "game-canvas", 0);
-let table = document.getElementById("score-board");
+let tableDisplay = document.getElementById("score-board");
 let scoreDisplay = document.getElementById("score");
 let score = 0;
-let playerName;
+let playerName = "Player " + ID;
 drawScoreBoard();
 
 function startGame() {
@@ -17,17 +17,20 @@ function startGame() {
     createBoard(currentLevel);
     drawScoreBoard();
     ID++;
-    console.log(ID);
 }
 
 function replayGame() {
-    drawScoreBoard();
     score = 0;
+    currentLevel = new GameBoard(playerName, "game-canvas", ID);
     createBoard(currentLevel);
 }
 
 function stopGame() {
+    window.cancelAnimationFrame(function () {
+        renderFrame(currentLevel);
+    });
     currentLevel.context.clearRect(0, 0, currentLevel.width, currentLevel.height);
+    saveScore(currentLevel.ID,currentLevel.player);
     drawScoreBoard();
 }
 
@@ -43,7 +46,7 @@ function nextLevel() {
 function createBoard(board) {
     board.init();
     board.invaderDrop();
-    requestAnimationFrame(function () {
+    window.requestAnimationFrame(function () {
         renderFrame(board);
     });
     window.addEventListener("keydown", function (event) {
@@ -51,12 +54,5 @@ function createBoard(board) {
     });
 }
 
-function isCrash(object1, object2) {
-    let distSubX = (object1.xPosition + object1.width / 2) - (object2.xPosition + object2.width / 2);
-    let distSubY = (object1.yPosition + object1.height / 2) - (object2.yPosition + object2.height / 2);
-    let distW = (object1.width + object2.width) / 2;
-    let distH = (object1.height + object2.height) / 2;
-    return Math.abs(distSubX) <= distW && Math.abs(distSubY) <= distH;
-}
-
-console.log(localStorage);
+console.log(window.localStorage);
+console.log("LocalStorage length" + window.localStorage.length);

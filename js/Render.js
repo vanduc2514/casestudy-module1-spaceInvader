@@ -8,7 +8,7 @@ function draw(board, object) {
 }
 
 function renderFrame(board) {
-    if (!board.isOver) {
+    if (!board.isLost) {
         board.context.clearRect(0, 0, board.width, board.height);
         draw(board, board.ship);
         if (board.ship.bullet.state) {
@@ -21,7 +21,8 @@ function renderFrame(board) {
                 }
             }
         }
-        board.watchDog();
+        board.checkBulletHit();
+        board.checkShipHit();
         board.checkWin();
         board.checkLose();
         scoreDisplay.innerHTML = "Điểm số: " + score;
@@ -29,6 +30,25 @@ function renderFrame(board) {
             renderFrame(board);
         });
     }
+}
+
+function getAndSortScore() {
+    let scoreArr = [];
+    for (let index = 1; index <= window.localStorage.length; index++) {
+        let data = window.localStorage.getItem(index.toString());
+        data = JSON.parse(data);
+        scoreArr.push(data);
+    }
+    for (let indexOuter = 0; indexOuter < scoreArr.length; indexOuter++) {
+        for (let indexInner = 0; indexInner < scoreArr.length - 1; indexInner++) {
+            if (scoreArr[indexInner].score < scoreArr[indexInner + 1].score) {
+                let temp = scoreArr[indexInner];
+                scoreArr[indexInner] = scoreArr[indexInner + 1];
+                scoreArr[indexInner + 1] = temp;
+            }
+        }
+    }
+    return scoreArr;
 }
 
 function drawScoreBoard() {
@@ -42,27 +62,7 @@ function drawScoreBoard() {
         html += "</tr>";
     }
     html += "</tbody>";
-    table.innerHTML = html;
+    tableDisplay.innerHTML = html;
 }
 
-function getAndSortScore() {
-    let scoreArr = [];
-    for (let index = 1; index <= localStorage.length; index++) {
-        let data = window.localStorage.getItem(index.toString());
-        data = JSON.parse(data);
-        scoreArr.push(data);
-    }
-    console.log(scoreArr.length);
-    console.log(scoreArr);
-    for (let indexOuter = 0; indexOuter < scoreArr.length; indexOuter++) {
-        for (let indexInner = 0; indexInner < scoreArr.length - 1; indexInner++) {
-            if (scoreArr[indexInner].score < scoreArr[indexInner + 1].score) {
-                let temp = scoreArr[indexInner];
-                scoreArr[indexInner] = scoreArr[indexInner + 1];
-                scoreArr[indexInner + 1] = temp;
-            }
-        }
-    }
-    return scoreArr;
-}
 
