@@ -74,6 +74,28 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }
     };
 
+    this.invaderDrop = function () {
+        let board = this;
+        let randRows = this.swarmRows;
+        let randCols = this.swarmCols;
+        for (let row = this.swarm.length - 1; row >= 0; row--) {
+            for (let col = 0; col < this.swarmCols; col++) {
+                this.swarm[row][col].travel = this.swarmTravel;
+                this.swarm[row][col].velocity = this.swarmVelocity;
+                this.swarm[row][col].drop(this.height);
+            }
+        }
+        let timeDrop = setInterval(function () {
+            if (board.isLost) {
+                clearInterval(timeDrop);
+            }
+            let row = Math.abs(Math.floor(Math.random() * randRows - 1));
+            let col = Math.abs(Math.floor(Math.random() * randCols - 1));
+            board.swarm[row][col].travel = board.enemyTravel;
+            board.swarm[row][col].velocity = board.enemyVelocity;
+        }, board.enemyTimeDrop)
+    };
+
     this.checkBulletHit = function () {
         if (this.ship.bullet.state) {
             for (let row = this.swarm.length - 1; row >= 0; row--) {
