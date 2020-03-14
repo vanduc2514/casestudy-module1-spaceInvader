@@ -5,12 +5,13 @@ let scoreDisplay = document.getElementById("score");
 let score = 0;
 let playerName = "Player " + playerID;
 let playerScore = new Score();
+let render;
 drawScoreBoard();
 
 function startGame() {
     playerID = window.localStorage.length + 1;
     score = 0;
-    playerName = prompt("Bạn gì ơi, nhập tên của mình vào đây nhé: ","Player " + playerID);
+    playerName = prompt("Bạn gì ơi, nhập tên của mình vào đây nhé: ", "Player " + playerID);
     if (playerName === null) {
         playerName = "Player " + playerID;
     }
@@ -26,8 +27,9 @@ function replayGame() {
 }
 
 function stopGame() {
+    window.cancelAnimationFrame(render);
     currentLevel.context.clearRect(0, 0, currentLevel.width, currentLevel.height);
-    saveScore(currentLevel.ID,currentLevel.player);
+    saveScore(currentLevel.ID, currentLevel.player);
     drawScoreBoard();
 }
 
@@ -43,7 +45,9 @@ function nextGame() {
 function createBoard(board) {
     board.init();
     board.invaderDrop();
-    renderFrame(board);
+    render = window.requestAnimationFrame(function () {
+        renderFrame(board)
+    });
     window.addEventListener("keydown", function (event) {
         board.controlShip(event)
     });

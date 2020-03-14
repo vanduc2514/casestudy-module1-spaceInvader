@@ -153,6 +153,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                 alert("Thắng rồi. Hurrayy!!");
                 let choice = confirm("Các màn sau sẽ thử thách hơn. Chơi tiếp hông ?");
                 if (choice) {
+                    stopGame();
                     nextGame();
                 } else {
                     stopGame();
