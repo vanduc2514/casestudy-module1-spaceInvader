@@ -20,11 +20,9 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
     this.bulletVelocity = DEFAULT_BOARD_BULLET_VELOCITY;
     this.moveThresholdLeft = DEFAULT_SHIP_SPEED - DEFAULT_SHIP_WIDTH / 2;
     this.moveThresholdRight = this.width - DEFAULT_SHIP_SPEED - DEFAULT_SHIP_WIDTH / 2;
-    this.isOver = false;
+    this.isLost = false;
     this.isVictory = false;
-    this.isSwarmDrop = false;
-    this.isTimeDrop = false;
-
+    this.isOver = false;
 
     this.createSwarm = function () {
         this.swarm = [];
@@ -64,9 +62,6 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
             case KEYBOARD_SPACE:
                 action = ACTION_SHOOT;
                 break;
-            case "KeyS":
-                nextLevel();
-                break;
         }
         if (direction !== "") {
             this.ship.move(direction);
@@ -79,42 +74,18 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }
     };
 
-    this.invaderDrop = function () {
-        if (this.isSwarmDrop) {
+    this.checkBulletHit = function () {
+        if (this.ship.bullet.state) {
             for (let row = this.swarm.length - 1; row >= 0; row--) {
                 for (let col = 0; col < this.swarmCols; col++) {
-                    this.swarm[row][col].travel = this.swarmTravel;
-                    this.swarm[row][col].velocity = this.swarmVelocity;
-                    this.swarm[row][col].drop(this.height);
-                }
-            }
-        }
-        if (this.isTimeDrop) {
-            let board = this;
-            let randRows = this.swarmRows;
-            let randCols = this.swarmCols;
-            let timeDrop = setInterval(function () {
-                if (board.isOver) {
-                    clearInterval(timeDrop);
-                }
-                let row = Math.abs(Math.floor(Math.random() * randRows - 1));
-                let col = Math.abs(Math.floor(Math.random() * randCols - 1));
-                board.swarm[row][col].travel = board.enemyTravel;
-                board.swarm[row][col].velocity = board.enemyVelocity;
-            }, board.enemyTimeDrop)
-        }
-    };
-
-    this.checkBulletHit = function () {
-        for (let row = this.swarm.length - 1; row >= 0; row--) {
-            for (let col = 0; col < this.swarmCols; col++) {
-                if (this.swarm[row][col].state) {
-                    let isHit = isCrash(this.ship.bullet, this.swarm[row][col]);
-                    if (isHit) {
-                        this.ship.bullet.state = false;
-                        this.swarm[row][col].state = false;
-                        this.score += this.scoreIncrease;
-                        score += this.scoreIncrease;
+                    if (this.swarm[row][col].state) {
+                        let isHit = isCrash(this.ship.bullet, this.swarm[row][col]);
+                        if (isHit) {
+                            this.ship.bullet.state = false;
+                            this.swarm[row][col].state = false;
+                            this.score += this.scoreIncrease;
+                            score += this.scoreIncrease;
+                        }
                     }
                 }
             }
@@ -122,27 +93,19 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
     };
 
     this.checkShipHit = function () {
-        for (let row = this.swarm.length - 1; row >= 0; row--) {
-            for (let col = 0; col < this.swarmCols; col++) {
-                if (this.swarm[row][col].state) {
-                    let isHit = isCrash(this.ship, this.swarm[row][col]);
-                    if (isHit) {
-                        this.ship.state = false;
-                        this.swarm[row][col].state = false;
-                        this.isOver = true;
-                        return;
+        if (this.ship.state) {
+            for (let row = this.swarm.length - 1; row >= 0; row--) {
+                for (let col = 0; col < this.swarmCols; col++) {
+                    if (this.swarm[row][col].state) {
+                        let isHit = isCrash(this.ship, this.swarm[row][col]);
+                        if (isHit) {
+                            this.ship.state = false;
+                            this.swarm[row][col].state = false;
+                            this.isLost = true
+                        }
                     }
                 }
             }
-        }
-    };
-
-    this.watchDog = function () {
-        if (this.ship.bullet.state) {
-            this.checkBulletHit();
-        }
-        if (this.ship.state) {
-            this.checkShipHit();
         }
     };
 
@@ -155,34 +118,42 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                 }
             }
         }
-        if (count >= this.swarmRows * this.swarmCols) {
-            this.isVictory = true;
-            this.isOver = true;
-            alert("Thắng rồi. Hurrayy!!");
-            let choice = confirm("Các màn sau sẽ thử thách hơn. Chơi tiếp hông ?");
-            if (choice) {
-                nextLevel();
-            } else {
-                saveScore(this.ID.toString(), this.player);
-                stopGame();
-                return true;
+        if (!this.isVictory) {
+            if (count >= this.swarmRows * this.swarmCols) {
+                this.isOver = true;
+                this.isVictory = true;
+                alert("Thắng rồi. Hurrayy!!");
+                let choice = confirm("Các màn sau sẽ thử thách hơn. Chơi tiếp hông ?");
+                if (choice) {
+                    stopGame();
+                    nextGame();
+                } else {
+                    stopGame();
+                }
             }
         }
     };
 
 
     this.checkLose = function () {
-        if (this.isOver && !this.isVictory) {
+        if (this.isLost) {
+            this.isOver = true;
             alert("Tiếc quá không cứu được Trái Đất rùi :(");
             let choice = confirm("Không sao đâu. Chơi lại hông ??");
             if (choice) {
-                this.isOver = false;
+                stopGame();
                 replayGame();
             } else {
-                saveScore(this.ID.toString(), this.player);
                 stopGame();
-                return true;
             }
         }
     };
 };
+
+function isCrash(object1, object2) {
+    let distSubX = (object1.xPosition + object1.width / 2) - (object2.xPosition + object2.width / 2);
+    let distSubY = (object1.yPosition + object1.height / 2) - (object2.yPosition + object2.height / 2);
+    let distW = (object1.width + object2.width) / 2;
+    let distH = (object1.height + object2.height) / 2;
+    return Math.abs(distSubX) <= distW && Math.abs(distSubY) <= distH;
+}

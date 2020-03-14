@@ -1,4 +1,4 @@
-function draw(board, object) {
+function drawObject(board, object) {
     let image = object.getImage();
     let xPosition = object.xPosition;
     let yPosition = object.yPosition;
@@ -10,24 +10,57 @@ function draw(board, object) {
 function renderFrame(board) {
     if (!board.isOver || board.isVictory) {
         board.context.clearRect(0, 0, board.width, board.height);
-        draw(board, board.ship);
+        drawObject(board, board.ship);
         if (board.ship.bullet.state) {
-            draw(board, board.ship.bullet);
+            drawObject(board, board.ship.bullet);
         }
         for (let row = board.swarm.length - 1; row >= 0; row--) {
             for (let col = 0; col < board.swarmCols; col++) {
                 if (board.swarm[row][col].state) {
-                    draw(board, board.swarm[row][col]);
+                    drawObject(board, board.swarm[row][col]);
                 }
             }
         }
-        board.watchDog();
+        board.checkBulletHit();
+        board.checkShipHit();
         board.checkWin();
         board.checkLose();
         scoreDisplay.innerHTML = "Điểm số: " + score;
-        requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
             renderFrame(board);
         });
     }
 }
 
+function getAndSortScore() {
+    let scoreArr = [];
+    for (let index = 1; index <= window.localStorage.length; index++) {
+        let data = window.localStorage.getItem(index.toString());
+        data = JSON.parse(data);
+        scoreArr.push(data);
+    }
+    for (let indexOuter = 0; indexOuter < scoreArr.length; indexOuter++) {
+        for (let indexInner = 0; indexInner < scoreArr.length - 1; indexInner++) {
+            if (scoreArr[indexInner].score < scoreArr[indexInner + 1].score) {
+                let temp = scoreArr[indexInner];
+                scoreArr[indexInner] = scoreArr[indexInner + 1];
+                scoreArr[indexInner + 1] = temp;
+            }
+        }
+    }
+    return scoreArr;
+}
+
+function drawScoreBoard() {
+    let scoreBoard = getAndSortScore();
+    let html = "<thead><tr><td>Tên Người chơi</td><td>Điểm số</td></tr></thead>";
+    html += "<tbody>";
+    for (let index = 0; index < scoreBoard.length; index++) {
+        html += "<tr>";
+        html += "<td>" + scoreBoard[index].name + "</td>";
+        html += "<td style='text-align: center'>" + scoreBoard[index].score + "</td>";
+        html += "</tr>";
+    }
+    html += "</tbody>";
+    tableDisplay.innerHTML = html;
+}

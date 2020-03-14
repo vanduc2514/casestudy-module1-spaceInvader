@@ -1,83 +1,54 @@
-let ID = window.localStorage.length + 1;
-let table = document.getElementById("score-board");
+let playerID;
+let currentLevel = new GameBoard("default", "game-canvas", 0);
+let tableDisplay = document.getElementById("score-board");
 let scoreDisplay = document.getElementById("score");
 let score;
-let playerName = "";
-let level = 1;
-let beginner = new GameBoard(playerName, "game-canvas", ID);
-let intermediate = new GameBoard(playerName, "game-canvas", ID);
-let advance = new GameBoard(playerName, "game-canvas", ID);
-let expertise = new GameBoard(playerName, "game-canvas", ID);
+let playerName;
+let playerScore = new Score();
+let render;
 drawScoreBoard();
 
 function startGame() {
+    playerID = window.localStorage.length + 1;
     score = 0;
-    level = 1;
-    playerName = prompt("Bạn gì ơi, nhập tên của mình vào đây nhé: ", "Để tên trống sẽ mặc định là Loser");
-    if (playerName === null || playerName === "") {
-        playerName = "Loser";
+    playerName = prompt("Bạn gì ơi, nhập tên của mình vào đây nhé: ", "Player " + playerID);
+    if (playerName === null) {
+        playerName = "Player " + playerID;
     }
-    alert("Bắt đầu chơi nà");
-    createBoard(beginner);
+    currentLevel = new GameBoard(playerName, "game-canvas", playerID);
+    createBoard(currentLevel);
     drawScoreBoard();
-    ID++;
 }
 
 function replayGame() {
-    level = 1;
     score = 0;
-    createBoard(beginner);
-    drawScoreBoard();
+    currentLevel = new GameBoard(playerName, "game-canvas", playerID);
+    createBoard(currentLevel);
 }
 
 function stopGame() {
-    beginner.context.clearRect(0, 0, beginner.width, beginner.height);
+    window.cancelAnimationFrame(render);
+    currentLevel.context.clearRect(0, 0, currentLevel.width, currentLevel.height);
+    saveScore(currentLevel.ID, currentLevel.player);
     drawScoreBoard();
 }
 
-function nextLevel() {
-    if (level <= 5) {
-        createBeginner();
-        createBoard(beginner);
-    }
-    if (level > 5 && level <= 10) {
-        createIntermediate();
-        createBoard(intermediate);
-    }
-    if (level > 15 && level <= 20) {
-        createAdvance();
-        createBoard(advance);
-    }
-    if (level > 25 && level <= 30) {
-        createExpertise();
-        createBoard(expertise);
-    }
-    else {
-        saveScore();
-        stopGame();
-        alert("Bạn đã cố gắng lắm nhỉ, cám ơn bạn đã chơi trò chơi của tôi ^^")
-    }
-    level++;
-    document.getElementById("level").innerHTML = level;
-    alert("Bạn đã tới level: " + level);
-    drawScoreBoard();
+function nextGame() {
+    currentLevel = new GameBoard(playerName, "game-canvas", playerID);
+    currentLevel.enemyTravel += 10;
+    currentLevel.enemyVelocity -= 10;
+    currentLevel.swarmTravel += 20;
+    currentLevel.enemyVelocity -= 30;
+    createBoard(currentLevel);
 }
 
 function createBoard(board) {
     board.init();
-    requestAnimationFrame(function () {
-        renderFrame(board);
+    board.invaderDrop();
+    render = window.requestAnimationFrame(function () {
+        renderFrame(board)
     });
     window.addEventListener("keydown", function (event) {
         board.controlShip(event)
     });
-    board.invaderDrop();
-}
-
-function isCrash(object1, object2) {
-    let distSubX = (object1.xPosition + object1.width / 2) - (object2.xPosition + object2.width / 2);
-    let distSubY = (object1.yPosition + object1.height / 2) - (object2.yPosition + object2.height / 2);
-    let distW = (object1.width + object2.width) / 2;
-    let distH = (object1.height + object2.height) / 2;
-    return Math.abs(distSubX) <= distW && Math.abs(distSubY) <= distH;
 }
