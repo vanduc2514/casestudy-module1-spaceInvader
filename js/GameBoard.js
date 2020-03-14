@@ -170,7 +170,6 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                 replayGame();
             } else {
                 stopGame();
-                return true;
             }
         }
     };
