@@ -1,4 +1,4 @@
-function draw(board, object) {
+function drawObject(board, object) {
     let image = object.getImage();
     let xPosition = object.xPosition;
     let yPosition = object.yPosition;
@@ -8,16 +8,16 @@ function draw(board, object) {
 }
 
 function renderFrame(board) {
-    if (!board.isLost) {
+    if (!board.isOver) {
         board.context.clearRect(0, 0, board.width, board.height);
-        draw(board, board.ship);
+        drawObject(board, board.ship);
         if (board.ship.bullet.state) {
-            draw(board, board.ship.bullet);
+            drawObject(board, board.ship.bullet);
         }
         for (let row = board.swarm.length - 1; row >= 0; row--) {
             for (let col = 0; col < board.swarmCols; col++) {
                 if (board.swarm[row][col].state) {
-                    draw(board, board.swarm[row][col]);
+                    drawObject(board, board.swarm[row][col]);
                 }
             }
         }
@@ -26,7 +26,7 @@ function renderFrame(board) {
         board.checkWin();
         board.checkLose();
         scoreDisplay.innerHTML = "Điểm số: " + score;
-        requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
             renderFrame(board);
         });
     }

@@ -9,10 +9,13 @@ let Score = function (name, score) {
 };
 
 function saveScore(ID,playerName) {
-    let playerScore = new Score();
     playerScore.setData(playerName, score);
     window.localStorage.setItem(ID.toString(), JSON.stringify(playerScore));
+    console.table(window.localStorage);
+    console.log("Local storage " + window.localStorage.length);
 }
+
+window.localStorage.clear();
 
 let champOne = new Score("Đức", 1000);
 let champTwo = new Score("NamCT", 700);

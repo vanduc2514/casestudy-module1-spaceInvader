@@ -22,7 +22,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
     this.moveThresholdRight = this.width - DEFAULT_SHIP_SPEED - DEFAULT_SHIP_WIDTH / 2;
     this.isLost = false;
     this.isVictory = false;
-    this.count = 0;
+    this.isOver = false;
 
     this.createSwarm = function () {
         this.swarm = [];
@@ -148,11 +148,12 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }
         if (!this.isVictory) {
             if ( count >= this.swarmRows * this.swarmCols) {
+                this.isOver = true;
                 this.isVictory = true;
                 alert("Thắng rồi. Hurrayy!!");
                 let choice = confirm("Các màn sau sẽ thử thách hơn. Chơi tiếp hông ?");
                 if (choice) {
-                    nextLevel();
+                    nextGame();
                 } else {
                     stopGame();
                 }
@@ -163,6 +164,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
 
     this.checkLose = function () {
         if (this.isLost) {
+            this.isOver = true;
             alert("Tiếc quá không cứu được Trái Đất rùi :(");
             let choice = confirm("Không sao đâu. Chơi lại hông ??");
             if (choice) {
