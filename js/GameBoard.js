@@ -24,7 +24,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
     this.isOver = false;
     this.playerBulletArr = [];
     this.playerBulletIndex = 0;
-    this.activeMachineGun = false;
+    this.activeMachineGun = true;
     this.enemyBulletArr = [];
     this.enemyBulletIndex = 0;
     this.enemyAttackState = true;
@@ -100,24 +100,24 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         let board = this;
         let randRows = this.swarmRows;
         let randCols = this.swarmCols;
-        let row = Math.abs(Math.floor(Math.random() * randRows - 1));
-        let col = Math.abs(Math.floor(Math.random() * randCols - 1));
-        if (board.swarm[row][col].state) {
-            if (board.enemyAttackState) {
-                board.swarm[row][col].travel = board.enemyTravel;
-                board.swarm[row][col].velocity = board.enemyVelocity;
-                board.enemyAttackState = false;
-            } else {
-                board.swarm[row][col].shoot();
-                board.enemyBulletArr.push(board.swarm[row][col].shoot());
-                board.makeBulletFly(board.enemyBulletArr, board.enemyBulletIndex, board.height, -1);
-                board.enemyBulletIndex++;
-                board.enemyAttackState = true;
-            }
+        let row;
+        let col;
+        do {
+            row = Math.abs(Math.floor(Math.random() * randRows - 1));
+            col = Math.abs(Math.floor(Math.random() * randCols - 1));
+        } while (!this.swarm[row][col].state && !this.isOver);
+        if (board.enemyAttackState) {
+            board.swarm[row][col].travel = board.enemyTravel;
+            board.swarm[row][col].velocity = board.enemyVelocity;
+            board.enemyAttackState = false;
         } else {
-            this.invaderAttack();
+            board.swarm[row][col].shoot();
+            board.enemyBulletArr.push(board.swarm[row][col].shoot());
+            board.makeBulletFly(board.enemyBulletArr, board.enemyBulletIndex, board.height, -1);
+            board.enemyBulletIndex++;
+            board.enemyAttackState = true;
         }
-        if (!board.isLost) {
+        if (!board.isOver) {
             setTimeout(function () {
                 board.invaderAttack();
             }, board.enemyTimeAttack)
@@ -125,9 +125,6 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
     };
 
     this.invaderDrop = function () {
-        // let board = this;
-        // let randRows = this.swarmRows;
-        // let randCols = this.swarmCols;
         for (let row = this.swarm.length - 1; row >= 0; row--) {
             for (let col = 0; col < this.swarmCols; col++) {
                 this.swarm[row][col].travel = this.swarmTravel;
@@ -136,6 +133,26 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
             }
         }
     };
+
+    this.newBulletHit = function () {
+        for (let row = this.swarm.length - 1; row >= 0; row--) {
+            for (let col = 0; col < this.swarmCols; col++) {
+                if (this.swarm[row][col].state) {
+                    let index = 0;
+                    while (this.playerBulletArr[index].state) {
+                        let isHit = checkCollision(this.playerBulletArr[index], this.swarm[row][col]);
+                        if (isHit) {
+                            this.playerBulletArr[index].state = false;
+                            this.swarm[row][col].state = false;
+                            score += this.scoreIncrease;
+                        }
+                        index++;
+                    }
+                }
+            }
+        }
+    };
+
 
     this.checkBulletHit = function () {
         for (let index = 0; index < this.playerBulletArr.length; index++) {
@@ -154,6 +171,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                 }
             }
         }
+        console.log(this.playerBulletArr);
     };
 
     this.checkShipHit = function () {
