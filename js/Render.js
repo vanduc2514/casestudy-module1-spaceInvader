@@ -29,8 +29,8 @@ function renderFrame(board) {
                 }
             }
         }
-        board.changeBulletArr();
-        // board.checkBulletHit();
+        board.checkShipBullet();
+        board.checkInvaderBullet();
         board.checkShipHit();
         board.checkWin();
         board.checkLose();

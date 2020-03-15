@@ -134,7 +134,7 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }
     };
 
-    this.checkBulletHit = function () {
+    this.checkShipBullet = function () {
         for (let index = 0; index < this.playerBulletArr.length; index++) {
             if (this.playerBulletArr[index].state) {
                 for (let row = this.swarm.length - 1; row >= 0; row--) {
@@ -151,11 +151,29 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                 }
             }
             if (!this.playerBulletArr[index].state) {
-                this.playerBulletArr.splice(index,1);
+                this.playerBulletArr.splice(index, 1);
                 this.playerBulletIndex--;
             }
         }
-        console.log(this.playerBulletArr);
+    };
+
+    this.checkInvaderBullet = function () {
+        if (this.ship.state) {
+            for (let index = 0; index < this.enemyBulletArr.length; index++) {
+                if (this.enemyBulletArr[index].state) {
+                    let isHit = checkCollision(this.enemyBulletArr[index], this.ship);
+                    if (isHit) {
+                        this.enemyBulletArr[index].state = false;
+                        this.ship.state = false;
+                        this.isLost = true;
+                    }
+                }
+                if (!this.enemyBulletArr[index].state) {
+                    this.enemyBulletArr.splice(index, 1);
+                    this.enemyBulletIndex--;
+                }
+            }
+        }
     };
 
     this.checkShipHit = function () {
