@@ -134,26 +134,6 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
         }
     };
 
-    this.newBulletHit = function () {
-        for (let row = this.swarm.length - 1; row >= 0; row--) {
-            for (let col = 0; col < this.swarmCols; col++) {
-                if (this.swarm[row][col].state) {
-                    let index = 0;
-                    while (this.playerBulletArr[index].state) {
-                        let isHit = checkCollision(this.playerBulletArr[index], this.swarm[row][col]);
-                        if (isHit) {
-                            this.playerBulletArr[index].state = false;
-                            this.swarm[row][col].state = false;
-                            score += this.scoreIncrease;
-                        }
-                        index++;
-                    }
-                }
-            }
-        }
-    };
-
-
     this.checkBulletHit = function () {
         for (let index = 0; index < this.playerBulletArr.length; index++) {
             if (this.playerBulletArr[index].state) {
@@ -169,6 +149,10 @@ let GameBoard = function (playerName, canvasID, gameBoardID) {
                         }
                     }
                 }
+            }
+            if (!this.playerBulletArr[index].state) {
+                this.playerBulletArr.splice(index,1);
+                this.playerBulletIndex--;
             }
         }
         console.log(this.playerBulletArr);

@@ -29,7 +29,8 @@ function renderFrame(board) {
                 }
             }
         }
-        board.checkBulletHit();
+        board.changeBulletArr();
+        // board.checkBulletHit();
         board.checkShipHit();
         board.checkWin();
         board.checkLose();
