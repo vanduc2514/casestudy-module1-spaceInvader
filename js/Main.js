@@ -19,6 +19,7 @@ function startGame() {
         playerName = "Player " + playerID;
     }
     level = new GameBoard(playerName, "game-canvas", playerID);
+    stopGame();
     createBoard(level);
     drawScoreBoard();
 }

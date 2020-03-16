@@ -16,20 +16,20 @@ let Bullet = function () {
 
     this.fly = function (boundary) {
         let bullet = this;
-        this.yPosition -= this.travel;
-        if (this.isShipShoot) {
-            if (this.yPosition <= boundary) {
-                this.state = false;
+        let fly = setInterval(function () {
+            if (!bullet.state) {
+                clearInterval(fly);
             }
-        } else {
-            if (this.yPosition >= boundary) {
-                this.state = false;
+            bullet.yPosition -= bullet.travel;
+            if (bullet.isShipShoot) {
+                if (bullet.yPosition <= boundary) {
+                    bullet.state = false;
+                }
+            } else {
+                if (bullet.yPosition >= boundary) {
+                    bullet.state = false;
+                }
             }
-        }
-        if (this.state) {
-            setTimeout(function () {
-                bullet.fly(boundary)
-            }, bullet.velocity)
-        }
+        }, bullet.velocity)
     };
 };

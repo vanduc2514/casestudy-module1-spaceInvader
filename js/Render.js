@@ -13,19 +13,15 @@ function renderFrame(board) {
         drawObject(board, board.ship);
 
         for (let index = 0; index < board.playerBulletArr.length; index++) {
-            if (board.playerBulletArr[index].state) {
-                drawObject(board, board.playerBulletArr[index]);
-            }
+            drawObject(board, board.playerBulletArr[index]);
         }
         for (let index = 0; index < board.enemyBulletArr.length; index++) {
-            if (board.enemyBulletArr[index].state) {
-                drawObject(board, board.enemyBulletArr[index]);
-            }
+            drawObject(board, board.enemyBulletArr[index]);
         }
-        for (let row = board.swarm.length - 1; row >= 0; row--) {
-            for (let col = 0; col < board.swarmCols; col++) {
+        for (let row = 0; row < board.swarm.length; row++) {
+            for (let col = 0; col < board.swarm[row].length; col++) {
                 if (board.swarm[row][col].state) {
-                    drawObject(board, board.swarm[row][col]);
+                    drawObject(board, board.swarm[row][col])
                 }
             }
         }
