@@ -11,21 +11,27 @@ function renderFrame(board) {
     if (!board.isOver) {
         board.context.clearRect(0, 0, board.width, board.height);
         drawObject(board, board.ship);
-        if (board.ship.bullet.state) {
-            drawObject(board, board.ship.bullet);
+
+        for (let index = 0; index < board.playerBulletArr.length; index++) {
+            drawObject(board, board.playerBulletArr[index]);
         }
-        for (let row = board.swarm.length - 1; row >= 0; row--) {
-            for (let col = 0; col < board.swarmCols; col++) {
+        for (let index = 0; index < board.enemyBulletArr.length; index++) {
+            drawObject(board, board.enemyBulletArr[index]);
+        }
+        for (let row = 0; row < board.swarm.length; row++) {
+            for (let col = 0; col < board.swarm[row].length; col++) {
                 if (board.swarm[row][col].state) {
-                    drawObject(board, board.swarm[row][col]);
+                    drawObject(board, board.swarm[row][col])
                 }
             }
         }
-        board.checkBulletHit();
+        board.checkShipBullet();
+        board.checkInvaderBullet();
         board.checkShipHit();
         board.checkWin();
         board.checkLose();
         scoreDisplay.innerHTML = "Điểm số: " + score;
+        levelDisplay.innerHTML = levelID;
         window.requestAnimationFrame(function () {
             renderFrame(board);
         });

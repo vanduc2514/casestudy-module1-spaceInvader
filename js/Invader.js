@@ -25,5 +25,17 @@ let Invader = function (name) {
                 invader.drop(boundary)
             }, this.velocity)
         }
-    }
+    };
+
+    this.shoot = function () {
+        this.bullet = new Bullet();
+        this.bullet.isShipShoot = false;
+        this.bullet.state = true;
+        let yPosition = this.yPosition + this.height;
+        let xPosition = this.xPosition + this.width / 2;
+        this.bullet.xPosition = xPosition;
+        this.bullet.yPosition = yPosition;
+        return this.bullet;
+    };
+
 };
