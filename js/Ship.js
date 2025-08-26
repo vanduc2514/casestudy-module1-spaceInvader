@@ -9,7 +9,7 @@ let Ship = function (name) {
 
     this.getImage = function () {
         let image = new Image();
-        image.src = "./assets/images/ship.png";
+        image.src = "./assets/images/Ship.png";
         return image;
     };
 
